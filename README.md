@@ -1,6 +1,6 @@
 
 # django-ixpmgr
-A (very much work in progress) django overlay for INEX's IXP-Manager
+A (very much work in progress) django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager)
 
 ### License
 
