@@ -49,6 +49,7 @@ normalization. This is by no means complete, specifically, anything marked with
 ### Session integration
 
 Must add to django settings:
+
     SESSION_COOKIE_NAME = 'sid'
 
 Must add to application.ini:
