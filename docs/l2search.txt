@@ -1,0 +1,10 @@
+
+
+# for l2 search script
+pysnmp
+snimpy
+
+# centos
+yum install -y libsmi-devel
+yum install -y perl-local-lib                                                 
+
