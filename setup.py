@@ -8,7 +8,7 @@ setup(
     author='20C',
     author_email='code@20c.com',
     description='django overlay for IXP-Manager',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     license='LICENSE.txt',
     classifiers=[
         'Development Status :: 3 - Alpha',
