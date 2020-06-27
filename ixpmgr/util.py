@@ -1,4 +1,3 @@
-
 import configparser
 from collections import namedtuple
 import os
@@ -18,7 +17,7 @@ def load_config():
     home = settings.HOME
     cfg_file = os.path.join(home, 'application', 'configs', 'application.ini')
     if not os.path.exists(cfg_file):
-        raise ValueError("Config file %s not found" % (cfg_file,))
+        raise ValueError(f"Config file {cfg_file} not found")
 
     parser = configparser.ConfigParser()
     parser.read(cfg_file)
@@ -39,8 +38,8 @@ def get_interface(vir_intf_id):
     phy_intf = PhysicalInterface.objects.get(pk=each.id)
 
 def parse_macaddr(addr):
-    addr = re.sub('[\.\s:-]+', '', addr)
-    return "{0:012x}".format(int(addr, 16))
+    addr = re.sub(r'[\.\s:-]+', '', addr)
+    return "{:012x}".format(int(addr, 16))
 
 def get_macaddr(virt_intf):
     qs = MacAddress.objects.filter(virtual_interface__id=virt_intf.id)
