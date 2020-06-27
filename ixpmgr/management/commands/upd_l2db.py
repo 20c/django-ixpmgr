@@ -70,15 +70,11 @@ class Command(BaseCommand):
             print(errorIndication)
         else:
             if errorStatus:
-                print(
-                    (
-                        "%s at %s"
-                        % (
-                            errorStatus.prettyPrint(),
-                            errorIndex and varBinds[int(errorIndex) - 1] or "?",
-                        )
+                print(('%s at %s' % (
+                    errorStatus.prettyPrint(),
+                    errorIndex and varBinds[int(errorIndex)-1] or '?'
                     )
-                )
+                ))
             else:
                 for name, val in varBinds:
                     print(("%s = %s" % (name.prettyPrint(), val.prettyPrint())))
@@ -90,14 +86,17 @@ class Command(BaseCommand):
         # for id in s.dot1qPortIngressFiltering:
 
         m = M(switch.hostname, switch.snmppasswd)
-        # m = M(switch.hostname, 'dev_aLFMBMoZ30dNy8NqnHDJJgtRfP3', 2)
-        # print m.ifDescr[0]
-        # print m.sysContact
+        #m = M(switch.hostname, 'dev_aLFMBMoZ30dNy8NqnHDJJgtRfP3', 2)
+        #print m.ifDescr[0]
+        #print m.sysContact
         print(m.ifDescr)
-        #        for idx in m.ifDescr:
-        #            print m.ifDescr[idx]
-        # dot1qTpFdbPort
+        # for idx in m.ifDescr:
+        #     print m.ifDescr[idx]
+        #     dot1qTpFdbPort
         for i in m.dot1dBasePortIfIndex:
             ifidx = m.dot1dBasePortIfIndex[i]
             print("dot1d: ", i, m.dot1dBasePortIfIndex[i])
-            # print "dot1d: ", i, m.dot1dBasePortIfIndex[i], " ifDescr: ", m.ifDescr[ifidx]
+            #print "dot1d: ", i, m.dot1dBasePortIfIndex[i], " ifDescr: ", m.ifDescr[ifidx]
+
+
+
