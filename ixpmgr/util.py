@@ -1,5 +1,5 @@
 
-import ConfigParser
+import configparser
 from collections import namedtuple
 import os
 import re
@@ -20,7 +20,7 @@ def load_config():
     if not os.path.exists(cfg_file):
         raise ValueError("Config file %s not found" % (cfg_file,))
 
-    parser = ConfigParser.ConfigParser()
+    parser = configparser.ConfigParser()
     parser.read(cfg_file)
 
     rv = {}
@@ -53,7 +53,7 @@ def get_macaddr(virt_intf):
         raise ValueError('multiple mac addresses already defined for interface')
 
 def format_macaddr(addr):
-	return ':'.join(map(''.join, zip(*[iter(addr)] * 2)))
+	return ':'.join(map(''.join, list(zip(*[iter(addr)] * 2))))
 
 def dns_intf_name(intf):
     regex = settings.RDNS_INTF_REGEX

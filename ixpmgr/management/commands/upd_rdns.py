@@ -1,5 +1,5 @@
 
-from __future__ import division
+
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from django.db import transaction
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                 vlan_intf.save()
 
         # loop through all updates and send each zone at once
-        for zone, upargs in updates.items():
+        for zone, upargs in list(updates.items()):
 
             nsup = dns.update.Update(zone, keyring=keyring)
             for each in upargs:
