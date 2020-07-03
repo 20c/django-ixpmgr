@@ -1,5 +1,5 @@
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read_file(name):
@@ -8,8 +8,8 @@ def read_file(name):
 
 LONG_DESCRIPTION = read_file("README.md")
 VERSION = read_file("Ctl/VERSION")
-REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
-TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
+# REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
+# TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
 
 
 setup(
@@ -34,11 +34,13 @@ setup(
     package_dir={"": "src"},
     include_package_data=True,
 
-    install_requires=REQUIREMENTS,
-    test_requires=TEST_REQUIREMENTS,
+    # install_requires=REQUIREMENTS,
+    # test_requires=TEST_REQUIREMENTS,
 
     url="https://github.com/20c/django-ixpmgr",
     download_url="https://github.com/20c/django-ixpmgr/archive/{}.zip".format(VERSION),
 
+    install_requires=['django_extensions',
+                      'packaging'],
     zip_safe=False
 )
