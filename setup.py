@@ -1,14 +1,26 @@
 
 from setuptools import setup
 
+
+def read_file(name):
+    with open(name) as fobj:
+            return fobj.read().strip()
+
+LONG_DESCRIPTION = read_file("README.md")
+VERSION = read_file("Ctl/VERSION")
+REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
+TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
+
+
 setup(
     name='django-ixpmgr',
-    packages=['ixpmgr'],
-    version=open('facsimile/VERSION').read().rstrip(),
+    version=VERSION,
     author='20C',
     author_email='code@20c.com',
     description='django overlay for IXP-Manager',
-    long_description=open('README.md').read(),
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
+
     license='LICENSE.txt',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -17,5 +29,16 @@ setup(
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+
+    packages=find_packages("src"),
+    package_dir={"": "src"},
+    include_package_data=True,
+
+    install_requires=REQUIREMENTS,
+    test_requires=TEST_REQUIREMENTS,
+
+    url="https://github.com/20c/django-ixpmgr",
+    download_url="https://github.com/20c/django-ixpmgr/archive/{}.zip".format(VERSION),
+
     zip_safe=False
 )
