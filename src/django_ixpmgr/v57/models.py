@@ -208,8 +208,10 @@ class Coreinterfaces(models.Model):
 
 
 class Corelinks(models.Model):
-    core_interface_sidea = models.OneToOneField(Coreinterfaces, models.DO_NOTHING)
-    core_interface_sideb = models.OneToOneField(Coreinterfaces, models.DO_NOTHING)
+    core_interface_sidea = models.OneToOneField(Coreinterfaces, models.DO_NOTHING,
+                                                related_name='corelinks_sidea')
+    core_interface_sideb = models.OneToOneField(Coreinterfaces, models.DO_NOTHING,
+                                                related_name='corelinks_sideb')
     core_bundle = models.ForeignKey(Corebundles, models.DO_NOTHING)
     bfd = models.IntegerField()
     ipv4_subnet = models.CharField(max_length=18, blank=True, null=True)
@@ -735,7 +737,8 @@ class PatchPanelPortHistoryFile(models.Model):
 
 class PeeringManager(models.Model):
     custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
-    peerid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='peerid', blank=True, null=True)
+    peerid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='peerid', blank=True, null=True,
+                               related_name='peer')
     email_last_sent = models.DateTimeField(blank=True, null=True)
     emails_sent = models.IntegerField(blank=True, null=True)
     peered = models.IntegerField(blank=True, null=True)
@@ -750,8 +753,10 @@ class PeeringManager(models.Model):
 
 
 class PeeringMatrix(models.Model):
-    x_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='x_custid', blank=True, null=True)
-    y_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='y_custid', blank=True, null=True)
+    x_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='x_custid', blank=True, null=True,
+                                 related_name='x_customer')
+    y_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='y_custid', blank=True, null=True,
+                                 related_name='y_customer')
     vlan = models.IntegerField(blank=True, null=True)
     x_as = models.IntegerField(blank=True, null=True)
     y_as = models.IntegerField(blank=True, null=True)
