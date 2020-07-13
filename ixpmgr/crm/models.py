@@ -1,27 +1,95 @@
 from django.db import models
 import django_ixpmgr.models as ixpmgr_models
+from django_ixpmgr.model_util import ProxyField, ProxyManager
 
-class Account(models.Model):
-    source = models.OneToOneField(ixpmgr_models.Cust, models.CASCADE, primary_key=True)
+def join_address(*parts):
+    return '\n'.join(p for p in parts if p) or None
 
-    # replace with field aliases? https://shezadkhan.com/aliasing-fields-in-django/
-    id = models.CharField(max_length=80)
-    name = models.CharField(max_length=80) # but source name max=255
-    address = models.ForeignKey("crm.Address", models.DO_NOTHING)
+class ProxyModel(models.Model):
+    class Meta:
+        abstract = True
+    proxies = ProxyManager()
 
-    managing_account = models.ForeignKey("self", models.DO_NOTHING, null=True)
-    legal_name = models.CharField(max_length=80, null=True)
-    billing_information = models.ForeignKey("crm.BillingInformation", models.DO_NOTHING, null=True)
-    external_ref = models.CharField(max_length=80, null=True)
-    discoverable = models.BooleanField()
+    @classmethod
+    def create(cls, *a, **k):
+        return cls.proxies.create(*a, **k)
 
-class Address(models.Model):
-    source = models.OneToOneField(ixpmgr_models.CompanyRegistrationDetail, models.CASCADE, primary_key=True)
 
-class BillingInformation(models.Model):
-    source = models.OneToOneField(ixpmgr_models.CompanyBillingDetail, models.CASCADE, primary_key=True)
+class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
+    class Meta: proxy = True
+    Source = ixpmgr_models.CompanyRegistrationDetail
 
-class Contact(models.Model):
-    source = models.OneToOneField(ixpmgr_models.Contact, models.CASCADE, primary_key=True)
+    locality = ProxyField(Source.towncity) # max_length=40,
+    region = ProxyField(Source.jurisdiction)
+    postal_code = ProxyField(Source.postcode)
+
+    @property
+    def street_address(self):
+        return join_address(self.address1, self.address2, self.address3)
+
+    @property
+    def post_office_box_number(self):
+        return None
+
+class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
+    class Meta: proxy = True
+    Source = ixpmgr_models.CompanyBillingDetail
+
+    name = ProxyField(Source.billingcontactname)
+    vat_number = ProxyField(Source.vatnumber)
+
+    @property
+    def address(self): self
+
+    country = ProxyField(Source.billingcountry) # max=2
+    locality = ProxyField(Source.billingtowncity)
+    # region = ProxyField(Source.jurisdiction)
+    postal_code = ProxyField(Source.billingpostcode)
+
+    @property
+    def street_address(self):
+        return join_address(self.billingaddress1,
+                            self.billingaddress2,
+                            self.billingaddress3)
+    @property
+    def post_office_box_number(self):
+        return None
+
+    def save(self, *a, **k):
+        self.purchaseorderrequired = False
+        super(BillingInformation, self).save(*a, **k)
+
+class Account(ProxyModel, ixpmgr_models.Cust):
+    class Meta: proxy = True
+    Source = ixpmgr_models.Cust
+
+    address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
+    billing_information = ProxyField(Source.company_billing_details, proxy_model=BillingInformation)
+
+    #todo
+    @property
+    def managing_account(self):
+        pass
+    @property
+    def legal_name(self):
+        pass
+    @property
+    def external_ref(self):
+        pass
+    @property
+    def discoverable(self):
+        pass
+
+    def save(self, *a, **k):
+        # Required
+        self.isreseller = 0
+        self.in_manrs = 0
+        self.in_peeringdb = 0
+        self.peeringdb_oauth = 0
+        super(Account, self).save(*a, **k)
+
+class Contact(ProxyModel, ixpmgr_models.Contact):
+    class Meta: proxy = True
+    pass
 
 class Role(models.Model): pass
