@@ -11,7 +11,6 @@ class ProxyManager(models.Manager):
             for key in proxy_fields if key in k
         }
         obj = super(ProxyManager, self).create(**k)
-        # breakpoint()
         for key, value in values.items():
             setattr(obj, key, value)
         return obj
@@ -23,25 +22,21 @@ class ProxyFieldMixin:
         if contrib:
             contrib(model, name, virtual_only=True)
         setattr(model, name, self)
-
         model.proxy_fields = getattr(model, 'proxy_fields', set())
         model.proxy_fields.add(name)
 
     def __set__(self, instance, value):
-        # if self.source_field_name == 'company_registered_detail':
-        #     breakpoint()
         model = self.proxy_model
-        # if model and not isinstance(instance, model):
-        #     value = model(value)
-        if model and isinstance(instance, model):
-            value = value.id
+        if model and not isinstance(value, model):
+            value = model(value)
         setattr(instance, self.source_field_name, value)
+        print('proxy set', instance, self.source_field_name, value)
 
     def __get__(self, instance, instance_type=None):
         value = getattr(instance, self.source_field_name)
         model = self.proxy_model
-        if model and not isinstance(instance, model):
-            return model(value)
+        if model and not isinstance(value, model):
+            return model.objects.get(pk=value.id)
         return value
 
 def ProxyField(field, *args, proxy_model=None, **kwargs):
@@ -54,7 +49,6 @@ def ProxyField(field, *args, proxy_model=None, **kwargs):
     CustomProxyField = type("CustomProxyField", (ProxyFieldMixin, ParentField), {})
 
     self = CustomProxyField(field_name, *args, **kwargs)
-    # self.source_field = field
     self.source_field_name = field_name
     self.proxy_model = proxy_model
     # self.descriptor_class # django3
