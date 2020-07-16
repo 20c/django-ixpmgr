@@ -6,5 +6,5 @@ from . import serializers
 from . import models
 
 class AccountViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.AccountSerializer
     queryset = models.Account.objects.all()
+    serializer_class = serializers.AccountSerializer

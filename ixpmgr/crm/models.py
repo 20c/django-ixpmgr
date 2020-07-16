@@ -10,10 +10,6 @@ class ProxyModel(models.Model):
         abstract = True
     proxies = ProxyManager()
 
-    @classmethod
-    def create(cls, *a, **k):
-        return cls.proxies.create(*a, **k)
-
 
 class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
     class Meta: proxy = True
@@ -39,7 +35,7 @@ class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
     vat_number = ProxyField(Source.vatnumber)
 
     @property
-    def address(self): self
+    def address(self): return self
 
     country = ProxyField(Source.billingcountry) # max=2
     locality = ProxyField(Source.billingtowncity)

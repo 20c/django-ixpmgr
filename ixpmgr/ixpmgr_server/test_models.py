@@ -3,9 +3,9 @@ from django.test import TestCase
 from ixpmgr_server.models import Account, BillingInformation, RegAddress
 
 def make_chix():
-    a = Account.create(
+    a = Account.proxies.create(
         name="ChIX",
-        address=RegAddress.create(
+        address=RegAddress.proxies.create(
             country="US",
             locality="Chicago",
             region="IL",
@@ -13,11 +13,12 @@ def make_chix():
             # street_address="427 S. LaSalle",
             address1="427 S. LaSalle",
         ),
-        billing_information=BillingInformation.create(
+        billing_information=BillingInformation.proxies.create(
             country="US",
+            name="William",
             billingaddress1="123 Billings St.",
             locality="New York",
-            # region="NY",
+            region="NY",
             postal_code="28305",
         )
     )
