@@ -16,10 +16,9 @@ class ProxyManager(models.Manager):
     def get_factory(self):
         namespace = {'_create': self._create}
         args = self.proxy_fields
-        # args = args.union(field.name for field in self.model._meta.fields)
         arg_spec = ', '.join(f'{name}=None' for name in args)
         arg_list = ', '.join(f'{name}={name}' for name in args)
-        exec(f'def create({arg_spec}, **kwargs): return _create({arg_list}, **kwargs)', namespace)
+        exec(f'''def create({arg_spec}, **kwargs): return _create({arg_list}, **kwargs)''', namespace)
         return namespace['create']
 
     def _create(self, **k):
@@ -32,6 +31,13 @@ class ProxyManager(models.Manager):
             setattr(obj, key, value)
         obj.save()
         return obj
+
+
+class ProxyModel(models.Model):
+    class Meta:
+        abstract = True
+        # proxy = True
+    proxies = ProxyManager()
 
 
 class ProxyFieldMixin:
@@ -65,12 +71,16 @@ def ProxyField(field, *args, proxy_model=None, **kwargs):
     elif isinstance(field, ForwardOneToOneDescriptor):
         field_name = field.field.name
     ParentField = field.__class__
-    CustomProxyField = type("CustomProxyField", (ProxyFieldMixin, ParentField), {})
+    _ProxyField = type("ProxyField", (ProxyFieldMixin, ParentField), {})
 
-    self = CustomProxyField(field_name, *args, **kwargs)
+    self = _ProxyField(field_name, *args, **kwargs)
     # self.source_field = field
     self.source_field_name = field_name
     self.proxy_model = proxy_model
     # self.descriptor_class # django3
-    self.is_relation = False
+    # self.is_relation = False
     return self
+
+
+def NullField():
+    return property(lambda self: None)

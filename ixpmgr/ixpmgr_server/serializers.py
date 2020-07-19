@@ -17,3 +17,30 @@ class AccountSerializer(ixser.Account, serializers.ModelSerializer):
             'external_ref',
             'discoverable',
         ]
+
+class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
+    class Meta:
+        many = True
+        model = models.Facility
+        fields = [
+            "name",
+            "metro_area",
+            "address_country",
+            "address_locality",
+            "address_region",
+            "postal_code",
+            "street_address",
+            "peeringdb_facility_id",
+            "organisation_name",
+            "cluster",
+        ]
+
+class DeviceSerializer(ixser.Device, serializers.ModelSerializer):
+    class Meta:
+        many = True
+        model = models.Device
+        fields = [
+            "name",
+            "capabilities",
+            "physical_facility",
+        ]

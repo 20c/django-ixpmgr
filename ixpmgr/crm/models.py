@@ -1,19 +1,14 @@
 from django.db import models
-import django_ixpmgr.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyField, ProxyManager
+import django_ixpmgr.models as ixpmodels
+from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager
 
 def join_address(*parts):
     return '\n'.join(p for p in parts if p) or None
 
-class ProxyModel(models.Model):
-    class Meta:
-        abstract = True
-    proxies = ProxyManager()
 
-
-class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
+class RegAddress(ProxyModel, ixpmodels.CompanyRegistrationDetail):
     class Meta: proxy = True
-    Source = ixpmgr_models.CompanyRegistrationDetail
+    Source = ixpmodels.CompanyRegistrationDetail
 
     locality = ProxyField(Source.towncity) # max_length=40,
     region = ProxyField(Source.jurisdiction)
@@ -27,9 +22,9 @@ class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
     def post_office_box_number(self):
         return None
 
-class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
+class BillingInformation(ProxyModel, ixpmodels.CompanyBillingDetail):
     class Meta: proxy = True
-    Source = ixpmgr_models.CompanyBillingDetail
+    Source = ixpmodels.CompanyBillingDetail
 
     name = ProxyField(Source.billingcontactname)
     vat_number = ProxyField(Source.vatnumber)
@@ -55,9 +50,9 @@ class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
         self.purchaseorderrequired = False
         super(BillingInformation, self).save(*a, **k)
 
-class Account(ProxyModel, ixpmgr_models.Cust):
+class Account(ProxyModel, ixpmodels.Cust):
     class Meta: proxy = True
-    Source = ixpmgr_models.Cust
+    Source = ixpmodels.Cust
 
     address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
     billing_information = ProxyField(Source.company_billing_details, proxy_model=BillingInformation)
@@ -84,7 +79,7 @@ class Account(ProxyModel, ixpmgr_models.Cust):
         self.peeringdb_oauth = 0
         super(Account, self).save(*a, **k)
 
-class Contact(ProxyModel, ixpmgr_models.Contact):
+class Contact(ProxyModel, ixpmodels.Contact):
     class Meta: proxy = True
     pass
 
