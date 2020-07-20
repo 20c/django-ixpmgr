@@ -46,9 +46,9 @@ class BillingInformation(ProxyModel, ixpmodels.CompanyBillingDetail):
     def post_office_box_number(self):
         return None
 
-    def save(self, *a, **k):
+    def save(self, *args, **kwargs):
         self.purchaseorderrequired = False
-        super(BillingInformation, self).save(*a, **k)
+        super(BillingInformation, self).save(*args, **kwargs)
 
 class Account(ProxyModel, ixpmodels.Cust):
     class Meta: proxy = True
@@ -71,13 +71,13 @@ class Account(ProxyModel, ixpmodels.Cust):
     def discoverable(self):
         pass
 
-    def save(self, *a, **k):
+    def save(self, *args, **kwargs):
         # Required
         self.isreseller = 0
         self.in_manrs = 0
         self.in_peeringdb = 0
         self.peeringdb_oauth = 0
-        super(Account, self).save(*a, **k)
+        super(Account, self).save(*args, **kwargs)
 
 class Contact(ProxyModel, ixpmodels.Contact):
     class Meta: proxy = True
