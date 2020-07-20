@@ -1,14 +1,13 @@
-
 # TODO - gen from perl?
 # ../IXP-Manager/tools/perl-lib/IXPManager/lib/IXPManager/Const.pm
 # gen from PHP better, but it's all spread out
 
 # application/Entities/Customer.php
-TYPE_FULL       = 1
-TYPE_ASSOCIATE  = 2
-TYPE_INTERNAL   = 3
-TYPE_IXP        = 3
-TYPE_PROBONO    = 4
+TYPE_FULL = 1
+TYPE_ASSOCIATE = 2
+TYPE_INTERNAL = 3
+TYPE_IXP = 3
+TYPE_PROBONO = 4
 
 #    public static $CUST_TYPES_TEXT = [
 #        self::TYPE_FULL      => 'Full',
@@ -16,9 +15,9 @@ TYPE_PROBONO    = 4
 #        self::TYPE_INTERNAL  => 'Internal',
 #        self::TYPE_PROBONO   => 'Pro-bono'
 
-STATUS_NORMAL       = 1
+STATUS_NORMAL = 1
 STATUS_NOTCONNECTED = 2
-STATUS_SUSPENDED    = 3
+STATUS_SUSPENDED = 3
 
 #    public static $CUST_STATUS_TEXT = [
 #        self::STATUS_NORMAL           => 'Normal',
@@ -27,21 +26,20 @@ STATUS_SUSPENDED    = 3
 #    ];
 
 
-
 # application/Entities/PhysicalInterface.php
 
-STATUS_CONNECTED = 1;
-STATUS_DISABLED = 2;
-STATUS_NOTCONNECTED = 3;
-STATUS_XCONNECT = 4;
-STATUS_QUARANTINE = 5;
+STATUS_CONNECTED = 1
+STATUS_DISABLED = 2
+STATUS_NOTCONNECTED = 3
+STATUS_XCONNECT = 4
+STATUS_QUARANTINE = 5
 
 portstatus_desc = {
-  (STATUS_CONNECTED, 'Connected'),
-  (STATUS_DISABLED, 'Disabled'),
-  (STATUS_NOTCONNECTED, 'Not Connected'),
-  (STATUS_XCONNECT, 'Awaiting X-Connect'),
-  (STATUS_QUARANTINE, 'Quarantine'),
+    (STATUS_CONNECTED, "Connected"),
+    (STATUS_DISABLED, "Disabled"),
+    (STATUS_NOTCONNECTED, "Not Connected"),
+    (STATUS_XCONNECT, "Awaiting X-Connect"),
+    (STATUS_QUARANTINE, "Quarantine"),
 }
 
 
@@ -51,9 +49,6 @@ SWITCHTYPE_SWITCH = 1
 SWITCHTYPE_CONSOLESERVER = 2
 
 switchtype_desc = {
-  (SWITCHTYPE_SWITCH, 'Switch'),
-  (SWITCHTYPE_CONSOLESERVER, 'Console Server'),
+    (SWITCHTYPE_SWITCH, "Switch"),
+    (SWITCHTYPE_CONSOLESERVER, "Console Server"),
 }
-
-
-

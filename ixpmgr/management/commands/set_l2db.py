@@ -1,5 +1,3 @@
-
-from __future__ import division
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
@@ -15,11 +13,11 @@ from ixpmgr import util
 
 
 class Command(BaseCommand):
-    args = '<virtual interface id> <mac address>'
-    help = 'set mac address for port'
+    args = "<virtual interface id> <mac address>"
+    help = "set mac address for port"
 
     def handle(self, *args, **options):
-        log = logging.getLogger('ixpmgr.script')
+        log = logging.getLogger("ixpmgr.script")
 
         conf = util.load_config()
 
@@ -41,8 +39,7 @@ class Command(BaseCommand):
         elif cnt == 1:
             mac = qs[0]
         else:
-            raise CommandError('multiple mac addresses already defined for interface')
+            raise CommandError("multiple mac addresses already defined for interface")
 
         mac.mac = macaddr
         mac.save()
-
