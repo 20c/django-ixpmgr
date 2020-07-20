@@ -4,7 +4,7 @@ from ixpmgr_server.models import Account, BillingInformation, RegAddress
 from django_ixpmgr import models as ixpmodels
 
 def make_chix():
-    acc = Account.proxies.create(
+    account = Account.proxies.create(
         name="ChIX",
         address=RegAddress.proxies.create(
             country="US",
@@ -23,7 +23,7 @@ def make_chix():
             postal_code="28305",
         )
     )
-    loc = ixpmodels.Location.objects.create(
+    location = ixpmodels.Location.objects.create(
         name="ChIX main",
         shortname="chix1",
         tag="chix",
@@ -31,18 +31,18 @@ def make_chix():
         city = "Chicago",
         country = "US",
     )
-    cab = ixpmodels.Cabinet.objects.create(
-        locationid = loc,
-        name = "chix main cab",
+    cabinet = ixpmodels.Cabinet.objects.create(
+        locationid = location,
+        name = "chix main cabinet",
         cololocation = "chix main coloc",
         height = 42,
     )
-    k = ixpmodels.Custkit.objects.create(
-        custid=acc,
-        cabinetid=cab,
+    ixpmodels.Custkit.objects.create(
+        custid=account,
+        cabinetid=cabinet,
         name = "chix kit",
     )
-    return acc
+    return account
 
 class AccountTestCase(TestCase):
     def setUp(self):

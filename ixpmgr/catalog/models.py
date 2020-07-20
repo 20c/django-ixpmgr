@@ -1,11 +1,11 @@
 from django.db import models
-import django_ixpmgr.models as ixpmodels
+import django_ixpmgr.models as ixpmgr_models
 from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager, NullField
 
-class Facility(ProxyModel, ixpmodels.Location):
+class Facility(ProxyModel, ixpmgr_models.Location):
     class Meta:
         proxy = True
-    Source = ixpmodels.Location
+    Source = ixpmgr_models.Location
 
     metro_area = ProxyField(Source.city)
     address_country = ProxyField(Source.country)
@@ -18,8 +18,8 @@ class Facility(ProxyModel, ixpmodels.Location):
 
     @property
     def operator_name(self):
-        cabinet = ixpmodels.Cabinet.objects.get(locationid=self.id)
-        q = ixpmodels.Custkit.objects.filter(cabinetid=cabinet.id)
+        cabinet = ixpmgr_models.Cabinet.objects.get(locationid=self.id)
+        q = ixpmgr_models.Custkit.objects.filter(cabinetid=cabinet.id)
         cust = q.first().custid
         return cust.name
 

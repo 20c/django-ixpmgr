@@ -1,14 +1,14 @@
 from django.db import models
-import django_ixpmgr.models as ixpmodels
+import django_ixpmgr.models as ixpmgr_models
 from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager
 
 def join_address(*parts):
     return '\n'.join(p for p in parts if p) or None
 
 
-class RegAddress(ProxyModel, ixpmodels.CompanyRegistrationDetail):
+class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
     class Meta: proxy = True
-    Source = ixpmodels.CompanyRegistrationDetail
+    Source = ixpmgr_models.CompanyRegistrationDetail
 
     locality = ProxyField(Source.towncity) # max_length=40,
     region = ProxyField(Source.jurisdiction)
@@ -22,9 +22,9 @@ class RegAddress(ProxyModel, ixpmodels.CompanyRegistrationDetail):
     def post_office_box_number(self):
         return None
 
-class BillingInformation(ProxyModel, ixpmodels.CompanyBillingDetail):
+class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
     class Meta: proxy = True
-    Source = ixpmodels.CompanyBillingDetail
+    Source = ixpmgr_models.CompanyBillingDetail
 
     name = ProxyField(Source.billingcontactname)
     vat_number = ProxyField(Source.vatnumber)
@@ -50,9 +50,9 @@ class BillingInformation(ProxyModel, ixpmodels.CompanyBillingDetail):
         self.purchaseorderrequired = False
         super(BillingInformation, self).save(*args, **kwargs)
 
-class Account(ProxyModel, ixpmodels.Cust):
+class Account(ProxyModel, ixpmgr_models.Cust):
     class Meta: proxy = True
-    Source = ixpmodels.Cust
+    Source = ixpmgr_models.Cust
 
     address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
     billing_information = ProxyField(Source.company_billing_details, proxy_model=BillingInformation)
@@ -79,7 +79,7 @@ class Account(ProxyModel, ixpmodels.Cust):
         self.peeringdb_oauth = 0
         super(Account, self).save(*args, **kwargs)
 
-class Contact(ProxyModel, ixpmodels.Contact):
+class Contact(ProxyModel, ixpmgr_models.Contact):
     class Meta: proxy = True
     pass
 
