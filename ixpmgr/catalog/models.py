@@ -24,11 +24,7 @@ class Facility(ProxyModel, ixpmgr_models.Location):
         return cust.name
 
 
-class Device(models.Model):
-    "name",
-    "capabilities",
-    "physical_facility",
-
+class Device(models.Model): pass
 class ProductOffering(models.Model): pass
 class PointOfPresence(models.Model): pass
 class ExchangeLanNetworkProductOffering(models.Model): pass
