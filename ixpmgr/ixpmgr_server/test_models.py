@@ -1,7 +1,7 @@
 from django.test import TestCase
 
+from django_ixpmgr import models as ixpmgr_models
 from ixpmgr_server.models import Account, BillingInformation, RegAddress
-from django_ixpmgr import models as ixpmodels
 
 def make_chix():
     account = Account.proxies.create(
@@ -23,7 +23,7 @@ def make_chix():
             postal_code="28305",
         )
     )
-    location = ixpmodels.Location.objects.create(
+    location = ixpmgr_models.Location.objects.create(
         name="ChIX main",
         shortname="chix1",
         tag="chix",
@@ -31,13 +31,13 @@ def make_chix():
         city = "Chicago",
         country = "US",
     )
-    cabinet = ixpmodels.Cabinet.objects.create(
+    cabinet = ixpmgr_models.Cabinet.objects.create(
         locationid = location,
         name = "chix main cabinet",
         cololocation = "chix main coloc",
         height = 42,
     )
-    ixpmodels.Custkit.objects.create(
+    ixpmgr_models.Custkit.objects.create(
         custid=account,
         cabinetid=cabinet,
         name = "chix kit",
@@ -46,5 +46,10 @@ def make_chix():
 
 class AccountTestCase(TestCase):
     def setUp(self):
-        a = make_chix()
-        a.save()
+        self.acc1 = make_chix()
+
+    def test_get(self):
+        acc = Account.objects.get(pk=self.acc1.id)
+        cust = ixpmgr_models.Cust.objects.get(pk=self.acc1.id)
+        self.assertEqual(acc.name, "ChIX")
+        self.assertEqual(cust.name, "ChIX")

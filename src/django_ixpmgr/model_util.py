@@ -33,7 +33,7 @@ class ProxyManager(models.Manager):
         args = self.proxy_fields
         arg_spec = ', '.join(f'{name}=None' for name in args)
         arg_list = ', '.join(f'{name}={name}' for name in args)
-        doc_str = f"Create, save, and return a new proxy object"
+        doc_str = f"Create, save, and return a new object; extends Django's `Manager.create`."
         exec_lines = [
             f'def create({arg_spec}, **kwargs):',
             f'    "{doc_str}"',
@@ -44,6 +44,7 @@ class ProxyManager(models.Manager):
         return namespace['create']
 
     def _create(self, **k):
+        # Intercept the proxy fields bc Django will choke on them
         values = {
             key: k.pop(key)
             for key in self.proxy_fields if key in k
