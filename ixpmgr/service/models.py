@@ -8,6 +8,8 @@ class IXPRouterNetworkFeature(models.Model): pass
 class WhitelistMemberJoiningRule(models.Model): pass
 class BlacklistMemberJoiningRule(models.Model): pass
 class MemberJoiningRule(models.Model): pass
+class AllowMemberJoiningRule(models.Model): pass
+class DenyMemberJoiningRule(models.Model): pass
 class ExchangeLanNetworkProductOffering(models.Model): pass
 class ExchangeLanNetworkService(models.Model): pass
 class CloudNetworkService(models.Model): pass
