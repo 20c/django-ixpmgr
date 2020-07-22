@@ -90,13 +90,13 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     },
-    'ixpmanager': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ixpmanager',
-        'HOST': os.environ.get("IXPMANAGER_DATABASE_HOST"),
-        'USER': 'ixpmanager',
-        'PASSWORD': os.environ.get("IXPMANAGER_DATABASE_PASSWORD"),
-    }
+    "ixpmanager": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "ixpmanager",
+        "HOST": os.environ.get("IXPMANAGER_DATABASE_HOST"),
+        "USER": "ixpmanager",
+        "PASSWORD": os.environ.get("IXPMANAGER_DATABASE_PASSWORD"),
+    },
 }
 
 DATABASE_ROUTERS = ["django_ixpmgr.routers.Router"]
