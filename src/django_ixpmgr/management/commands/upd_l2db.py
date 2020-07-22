@@ -94,9 +94,9 @@ class Command(BaseCommand):
         # print m.ifDescr[0]
         # print m.sysContact
         print(m.ifDescr)
-        #        for idx in m.ifDescr:
-        #            print m.ifDescr[idx]
-        # dot1qTpFdbPort
+        # for idx in m.ifDescr:
+        #     print m.ifDescr[idx]
+        #     dot1qTpFdbPort
         for i in m.dot1dBasePortIfIndex:
             ifidx = m.dot1dBasePortIfIndex[i]
             print("dot1d: ", i, m.dot1dBasePortIfIndex[i])
