@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 ):
                     hostname += "."
                 hostname += settings.RDNS_DOMAIN
-                log.debug("set hostname='%s'" % (hostname,))
+                log.debug(f"set hostname='{hostname}'")
 
                 if each.ipv4enabled and each.ipv4address:
                     ip = ipaddress.IPv4Address(each.ipv4address)
