@@ -25,7 +25,7 @@ SECRET_KEY = "!d1!la!kl2mntd5gbhs+2nqul1e(@4oy2kfu4y8p-cdpf2(bko"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -89,9 +89,17 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    },
+    'ixpmanager': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ixpmanager',
+        'HOST': os.environ.get("IXPMANAGER_DATABASE_HOST"),
+        'USER': 'ixpmanager',
+        'PASSWORD': os.environ.get("IXPMANAGER_DATABASE_PASSWORD"),
     }
 }
 
+DATABASE_ROUTERS = ["django_ixpmgr.routers.Router"]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
