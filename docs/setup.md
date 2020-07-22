@@ -3,6 +3,7 @@ vegu's super basic dev instance, improved on
 ```
 export IXPMANAGER_DATABASE_PASSWORD=$PASSWORD
 export IXPMANAGER_DATABASE_HOST=$HOST
+pipenv install --dev
 pipenv shell
 cd ixpmgr
 python manage.py migrate --database=default
