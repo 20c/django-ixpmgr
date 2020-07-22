@@ -11,8 +11,9 @@ from django.db.models.fields.related_descriptors import ForwardOneToOneDescripto
 
 class ProxyManager(models.Manager):
     """Custom manager with factory method using named args corresponding to IX-API"""
+
     def __init__(self):
-        super(ProxyManager, self).__init__()
+        super().__init__()
         self.proxy_fields = set()
 
     def add_proxy_field(self, name):
@@ -31,25 +32,24 @@ class ProxyManager(models.Manager):
         <MyMod: MyMod object (1)>
         """
         args = self.proxy_fields
-        arg_spec = ', '.join(f'{name}=None' for name in args)
-        arg_list = ', '.join(f'{name}={name}' for name in args)
-        doc_str = f"Create, save, and return a new object; extends Django's `Manager.create`."
+        arg_spec = ", ".join(f"{name}=None" for name in args)
+        arg_list = ", ".join(f"{name}={name}" for name in args)
+        doc_str = (
+            f"Create, save, and return a new object; extends Django's `Manager.create`."
+        )
         exec_lines = [
-            f'def create({arg_spec}, **kwargs):',
+            f"def create({arg_spec}, **kwargs):",
             f'    "{doc_str}"',
-            f'    return _create({arg_list}, **kwargs)',
+            f"    return _create({arg_list}, **kwargs)",
         ]
-        namespace = {'_create': self._create}
-        exec('\n'.join(exec_lines), namespace)
-        return namespace['create']
+        namespace = {"_create": self._create}
+        exec("\n".join(exec_lines), namespace)
+        return namespace["create"]
 
     def _create(self, **k):
         # Intercept the proxy fields bc Django will choke on them
-        values = {
-            key: k.pop(key)
-            for key in self.proxy_fields if key in k
-        }
-        obj = super(ProxyManager, self).create(**k)
+        values = {key: k.pop(key) for key in self.proxy_fields if key in k}
+        obj = super().create(**k)
         for key, value in values.items():
             setattr(obj, key, value)
         obj.save()
@@ -58,10 +58,13 @@ class ProxyManager(models.Manager):
 
 class ProxyModel(models.Model):
     "Abstract base class for proxy models. Defines a `.proxies` manager."
+
     class Meta:
         abstract = True
         # proxy = True
+
     proxies = ProxyManager()
+
 
 # Adapted from https://shezadkhan.com/aliasing-fields-in-django/
 # Defines descriptors and a contribute_to_class method to plug into a Django
@@ -74,12 +77,13 @@ class ProxyFieldMixin:
     """
     Mixin class for defining a proxy field.
     """
+
     def contribute_to_class(self, model, name, **_):
         """Add this field to a model.
         Model must define a `.proxies` ProxyManager class attribute
         """
-        sup = super(ProxyFieldMixin, self)
-        contrib = getattr(sup, 'contribute_to_class', None)
+        sup = super()
+        contrib = getattr(sup, "contribute_to_class", None)
         if contrib:
             contrib(model, name, virtual_only=True)
         setattr(model, name, self)
@@ -100,7 +104,8 @@ class ProxyFieldMixin:
         proxied model, the return value is wrapped with the proxy model.
         """
         value = getattr(instance, self.source_field_name)
-        if not value: return value
+        if not value:
+            return value
         model = self.proxy_model
         if model and not isinstance(value, model):
             return model.objects.get(pk=value.id)
@@ -114,7 +119,7 @@ def ProxyField(field, *args, proxy_model=None, **kwargs):
     """
     field_name = None
     if isinstance(field, DeferredAttribute):
-        field_name = field.field_name # django2 inconsistency
+        field_name = field.field_name  # django2 inconsistency
     elif isinstance(field, ForwardOneToOneDescriptor):
         field_name = field.field.name
     ParentField = field.__class__
@@ -127,6 +132,7 @@ def ProxyField(field, *args, proxy_model=None, **kwargs):
     # self.descriptor_class # django3
     # self.is_relation = False
     return self
+
 
 # convenient field stubbing
 def NullField():

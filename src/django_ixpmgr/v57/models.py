@@ -10,18 +10,26 @@ from django.db import models
 
 class ApiKeys(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey('User', models.DO_NOTHING)
-    apikey = models.CharField(db_column='apiKey', unique=True, max_length=255)  # Field name made lowercase.
+    user = models.ForeignKey("User", models.DO_NOTHING)
+    apikey = models.CharField(
+        db_column="apiKey", unique=True, max_length=255
+    )  # Field name made lowercase.
     description = models.TextField(blank=True, null=True)
     expires = models.DateTimeField(blank=True, null=True)
-    allowedips = models.TextField(db_column='allowedIPs', blank=True, null=True)  # Field name made lowercase.
+    allowedips = models.TextField(
+        db_column="allowedIPs", blank=True, null=True
+    )  # Field name made lowercase.
     created = models.DateTimeField()
-    lastseenat = models.DateTimeField(db_column='lastseenAt', blank=True, null=True)  # Field name made lowercase.
-    lastseenfrom = models.CharField(db_column='lastseenFrom', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    lastseenat = models.DateTimeField(
+        db_column="lastseenAt", blank=True, null=True
+    )  # Field name made lowercase.
+    lastseenfrom = models.CharField(
+        db_column="lastseenFrom", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'api_keys'
+        db_table = "api_keys"
 
 
 class BgpSessions(models.Model):
@@ -34,8 +42,8 @@ class BgpSessions(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'bgp_sessions'
-        unique_together = (('srcipaddressid', 'protocol', 'dstipaddressid'),)
+        db_table = "bgp_sessions"
+        unique_together = (("srcipaddressid", "protocol", "dstipaddressid"),)
 
 
 class Bgpsessiondata(models.Model):
@@ -49,11 +57,13 @@ class Bgpsessiondata(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'bgpsessiondata'
+        db_table = "bgpsessiondata"
 
 
 class Cabinet(models.Model):
-    locationid = models.ForeignKey('Location', models.DO_NOTHING, db_column='locationid', blank=True, null=True)
+    locationid = models.ForeignKey(
+        "Location", models.DO_NOTHING, db_column="locationid", blank=True, null=True
+    )
     name = models.CharField(unique=True, max_length=255, blank=True, null=True)
     cololocation = models.CharField(max_length=255, blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
@@ -63,65 +73,107 @@ class Cabinet(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'cabinet'
+        db_table = "cabinet"
 
 
 class CompanyBillingDetail(models.Model):
-    billingcontactname = models.CharField(db_column='billingContactName', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingaddress1 = models.CharField(db_column='billingAddress1', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingaddress2 = models.CharField(db_column='billingAddress2', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingaddress3 = models.CharField(db_column='billingAddress3', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingtowncity = models.CharField(db_column='billingTownCity', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingpostcode = models.CharField(db_column='billingPostcode', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingcountry = models.CharField(db_column='billingCountry', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingemail = models.CharField(db_column='billingEmail', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingtelephone = models.CharField(db_column='billingTelephone', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    vatnumber = models.CharField(db_column='vatNumber', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    vatrate = models.CharField(db_column='vatRate', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    purchaseorderrequired = models.IntegerField(db_column='purchaseOrderRequired')  # Field name made lowercase.
-    invoicemethod = models.CharField(db_column='invoiceMethod', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    invoiceemail = models.CharField(db_column='invoiceEmail', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    billingfrequency = models.CharField(db_column='billingFrequency', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    billingcontactname = models.CharField(
+        db_column="billingContactName", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingaddress1 = models.CharField(
+        db_column="billingAddress1", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingaddress2 = models.CharField(
+        db_column="billingAddress2", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingaddress3 = models.CharField(
+        db_column="billingAddress3", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingtowncity = models.CharField(
+        db_column="billingTownCity", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingpostcode = models.CharField(
+        db_column="billingPostcode", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingcountry = models.CharField(
+        db_column="billingCountry", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingemail = models.CharField(
+        db_column="billingEmail", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingtelephone = models.CharField(
+        db_column="billingTelephone", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    vatnumber = models.CharField(
+        db_column="vatNumber", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    vatrate = models.CharField(
+        db_column="vatRate", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    purchaseorderrequired = models.IntegerField(
+        db_column="purchaseOrderRequired"
+    )  # Field name made lowercase.
+    invoicemethod = models.CharField(
+        db_column="invoiceMethod", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    invoiceemail = models.CharField(
+        db_column="invoiceEmail", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    billingfrequency = models.CharField(
+        db_column="billingFrequency", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'company_billing_detail'
+        db_table = "company_billing_detail"
 
 
 class CompanyRegistrationDetail(models.Model):
-    registeredname = models.CharField(db_column='registeredName', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    companynumber = models.CharField(db_column='companyNumber', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    registeredname = models.CharField(
+        db_column="registeredName", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    companynumber = models.CharField(
+        db_column="companyNumber", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
     jurisdiction = models.CharField(max_length=255, blank=True, null=True)
     address1 = models.CharField(max_length=255, blank=True, null=True)
     address2 = models.CharField(max_length=255, blank=True, null=True)
     address3 = models.CharField(max_length=255, blank=True, null=True)
-    towncity = models.CharField(db_column='townCity', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    towncity = models.CharField(
+        db_column="townCity", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
     postcode = models.CharField(max_length=255, blank=True, null=True)
     country = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'company_registration_detail'
+        db_table = "company_registration_detail"
 
 
 class ConsoleServer(models.Model):
-    vendor = models.ForeignKey('Vendor', models.DO_NOTHING, blank=True, null=True)
+    vendor = models.ForeignKey("Vendor", models.DO_NOTHING, blank=True, null=True)
     cabinet = models.ForeignKey(Cabinet, models.DO_NOTHING, blank=True, null=True)
     name = models.CharField(unique=True, max_length=255, blank=True, null=True)
     hostname = models.CharField(max_length=255, blank=True, null=True)
     model = models.CharField(max_length=255, blank=True, null=True)
-    serialnumber = models.CharField(db_column='serialNumber', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    serialnumber = models.CharField(
+        db_column="serialNumber", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
     active = models.IntegerField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'console_server'
+        db_table = "console_server"
 
 
 class Consoleserverconnection(models.Model):
-    custid = models.ForeignKey('Cust', models.DO_NOTHING, db_column='custid', blank=True, null=True)
-    console_server = models.ForeignKey(ConsoleServer, models.DO_NOTHING, blank=True, null=True)
+    custid = models.ForeignKey(
+        "Cust", models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
+    console_server = models.ForeignKey(
+        ConsoleServer, models.DO_NOTHING, blank=True, null=True
+    )
     switchid = models.IntegerField(blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     port = models.CharField(max_length=255, blank=True, null=True)
@@ -134,12 +186,14 @@ class Consoleserverconnection(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'consoleserverconnection'
-        unique_together = (('console_server', 'port'),)
+        db_table = "consoleserverconnection"
+        unique_together = (("console_server", "port"),)
 
 
 class Contact(models.Model):
-    custid = models.ForeignKey('Cust', models.DO_NOTHING, db_column='custid', blank=True, null=True)
+    custid = models.ForeignKey(
+        "Cust", models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
     name = models.CharField(max_length=255)
     position = models.CharField(max_length=50, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
@@ -155,7 +209,7 @@ class Contact(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'contact'
+        db_table = "contact"
 
 
 class ContactGroup(models.Model):
@@ -169,7 +223,7 @@ class ContactGroup(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'contact_group'
+        db_table = "contact_group"
 
 
 class ContactToGroup(models.Model):
@@ -178,8 +232,8 @@ class ContactToGroup(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'contact_to_group'
-        unique_together = (('contact', 'contact_group'),)
+        db_table = "contact_to_group"
+        unique_together = (("contact", "contact_group"),)
 
 
 class Corebundles(models.Model):
@@ -196,22 +250,26 @@ class Corebundles(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'corebundles'
+        db_table = "corebundles"
 
 
 class Coreinterfaces(models.Model):
-    physical_interface = models.OneToOneField('Physicalinterface', models.DO_NOTHING, blank=True, null=True)
+    physical_interface = models.OneToOneField(
+        "Physicalinterface", models.DO_NOTHING, blank=True, null=True
+    )
 
     class Meta:
         managed = True
-        db_table = 'coreinterfaces'
+        db_table = "coreinterfaces"
 
 
 class Corelinks(models.Model):
-    core_interface_sidea = models.OneToOneField(Coreinterfaces, models.DO_NOTHING,
-                                                related_name='corelinks_sidea')
-    core_interface_sideb = models.OneToOneField(Coreinterfaces, models.DO_NOTHING,
-                                                related_name='corelinks_sideb')
+    core_interface_sidea = models.OneToOneField(
+        Coreinterfaces, models.DO_NOTHING, related_name="corelinks_sidea"
+    )
+    core_interface_sideb = models.OneToOneField(
+        Coreinterfaces, models.DO_NOTHING, related_name="corelinks_sideb"
+    )
     core_bundle = models.ForeignKey(Corebundles, models.DO_NOTHING)
     bfd = models.IntegerField()
     ipv4_subnet = models.CharField(max_length=18, blank=True, null=True)
@@ -220,19 +278,33 @@ class Corelinks(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'corelinks'
+        db_table = "corelinks"
 
 
 class Cust(models.Model):
-    company_registered_detail = models.OneToOneField(CompanyRegistrationDetail, models.DO_NOTHING, blank=True, null=True)
-    company_billing_details = models.OneToOneField(CompanyBillingDetail, models.DO_NOTHING, blank=True, null=True)
-    irrdb = models.ForeignKey('Irrdbconfig', models.DO_NOTHING, db_column='irrdb', blank=True, null=True)
-    reseller = models.ForeignKey('self', models.DO_NOTHING, db_column='reseller', blank=True, null=True,
-                                 related_name='reseller_cust')
+    company_registered_detail = models.OneToOneField(
+        CompanyRegistrationDetail, models.DO_NOTHING, blank=True, null=True
+    )
+    company_billing_details = models.OneToOneField(
+        CompanyBillingDetail, models.DO_NOTHING, blank=True, null=True
+    )
+    irrdb = models.ForeignKey(
+        "Irrdbconfig", models.DO_NOTHING, db_column="irrdb", blank=True, null=True
+    )
+    reseller = models.ForeignKey(
+        "self",
+        models.DO_NOTHING,
+        db_column="reseller",
+        blank=True,
+        null=True,
+        related_name="reseller_cust",
+    )
     name = models.CharField(max_length=255, blank=True, null=True)
     type = models.IntegerField(blank=True, null=True)
     shortname = models.CharField(unique=True, max_length=255, blank=True, null=True)
-    abbreviatedname = models.CharField(db_column='abbreviatedName', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    abbreviatedname = models.CharField(
+        db_column="abbreviatedName", max_length=30, blank=True, null=True
+    )  # Field name made lowercase.
     autsys = models.IntegerField(blank=True, null=True)
     maxprefixes = models.IntegerField(blank=True, null=True)
     peeringemail = models.CharField(max_length=255, blank=True, null=True)
@@ -254,15 +326,19 @@ class Cust(models.Model):
     lastupdatedby = models.IntegerField(blank=True, null=True)
     creator = models.CharField(max_length=255, blank=True, null=True)
     created = models.DateField(blank=True, null=True)
-    md5support = models.CharField(db_column='MD5Support', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    isreseller = models.IntegerField(db_column='isReseller')  # Field name made lowercase.
+    md5support = models.CharField(
+        db_column="MD5Support", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    isreseller = models.IntegerField(
+        db_column="isReseller"
+    )  # Field name made lowercase.
     in_manrs = models.IntegerField()
     in_peeringdb = models.IntegerField()
     peeringdb_oauth = models.IntegerField()
 
     class Meta:
         managed = True
-        db_table = 'cust'
+        db_table = "cust"
 
 
 class CustNotes(models.Model):
@@ -276,7 +352,7 @@ class CustNotes(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'cust_notes'
+        db_table = "cust_notes"
 
 
 class CustTag(models.Model):
@@ -289,7 +365,7 @@ class CustTag(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'cust_tag'
+        db_table = "cust_tag"
 
 
 class CustToCustTag(models.Model):
@@ -298,36 +374,42 @@ class CustToCustTag(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'cust_to_cust_tag'
-        unique_together = (('customer_tag', 'customer'),)
+        db_table = "cust_to_cust_tag"
+        unique_together = (("customer_tag", "customer"),)
 
 
 class Custkit(models.Model):
-    custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
-    cabinetid = models.ForeignKey(Cabinet, models.DO_NOTHING, db_column='cabinetid', blank=True, null=True)
+    custid = models.ForeignKey(
+        Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
+    cabinetid = models.ForeignKey(
+        Cabinet, models.DO_NOTHING, db_column="cabinetid", blank=True, null=True
+    )
     name = models.CharField(max_length=255, blank=True, null=True)
     descr = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'custkit'
+        db_table = "custkit"
 
 
 class CustomerToIxp(models.Model):
     customer = models.OneToOneField(Cust, models.DO_NOTHING, primary_key=True)
-    ixp = models.ForeignKey('Ixp', models.DO_NOTHING)
+    ixp = models.ForeignKey("Ixp", models.DO_NOTHING)
 
     class Meta:
         managed = True
-        db_table = 'customer_to_ixp'
-        unique_together = (('customer', 'ixp'),)
+        db_table = "customer_to_ixp"
+        unique_together = (("customer", "ixp"),)
 
 
 class CustomerToUsers(models.Model):
     customer = models.ForeignKey(Cust, models.DO_NOTHING)
-    user = models.ForeignKey('User', models.DO_NOTHING)
+    user = models.ForeignKey("User", models.DO_NOTHING)
     privs = models.IntegerField()
-    extra_attributes = models.TextField(blank=True, null=True)  # This field type is a guess.
+    extra_attributes = models.TextField(
+        blank=True, null=True
+    )  # This field type is a guess.
     last_login_date = models.DateTimeField(blank=True, null=True)
     last_login_from = models.TextField(blank=True, null=True)
     last_login_via = models.CharField(max_length=50, blank=True, null=True)
@@ -335,8 +417,8 @@ class CustomerToUsers(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'customer_to_users'
-        unique_together = (('customer', 'user'),)
+        db_table = "customer_to_users"
+        unique_together = (("customer", "user"),)
 
 
 class DocstoreCustomerDirectories(models.Model):
@@ -350,13 +432,15 @@ class DocstoreCustomerDirectories(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'docstore_customer_directories'
+        db_table = "docstore_customer_directories"
 
 
 class DocstoreCustomerFiles(models.Model):
     id = models.BigAutoField(primary_key=True)
     cust = models.ForeignKey(Cust, models.DO_NOTHING)
-    docstore_customer_directory = models.ForeignKey(DocstoreCustomerDirectories, models.DO_NOTHING, blank=True, null=True)
+    docstore_customer_directory = models.ForeignKey(
+        DocstoreCustomerDirectories, models.DO_NOTHING, blank=True, null=True
+    )
     name = models.CharField(max_length=100)
     disk = models.CharField(max_length=100)
     path = models.CharField(max_length=255)
@@ -370,7 +454,7 @@ class DocstoreCustomerFiles(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'docstore_customer_files'
+        db_table = "docstore_customer_files"
 
 
 class DocstoreDirectories(models.Model):
@@ -383,12 +467,14 @@ class DocstoreDirectories(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'docstore_directories'
+        db_table = "docstore_directories"
 
 
 class DocstoreFiles(models.Model):
     id = models.BigAutoField(primary_key=True)
-    docstore_directory = models.ForeignKey(DocstoreDirectories, models.DO_NOTHING, blank=True, null=True)
+    docstore_directory = models.ForeignKey(
+        DocstoreDirectories, models.DO_NOTHING, blank=True, null=True
+    )
     name = models.CharField(max_length=100)
     disk = models.CharField(max_length=100)
     path = models.CharField(max_length=255)
@@ -402,7 +488,7 @@ class DocstoreFiles(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'docstore_files'
+        db_table = "docstore_files"
 
 
 class DocstoreLogs(models.Model):
@@ -414,7 +500,7 @@ class DocstoreLogs(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'docstore_logs'
+        db_table = "docstore_logs"
 
 
 class FailedJobs(models.Model):
@@ -427,42 +513,46 @@ class FailedJobs(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'failed_jobs'
+        db_table = "failed_jobs"
 
 
 class Infrastructure(models.Model):
-    ixp = models.ForeignKey('Ixp', models.DO_NOTHING)
+    ixp = models.ForeignKey("Ixp", models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True, null=True)
     shortname = models.CharField(max_length=255, blank=True, null=True)
-    isprimary = models.IntegerField(db_column='isPrimary')  # Field name made lowercase.
+    isprimary = models.IntegerField(db_column="isPrimary")  # Field name made lowercase.
     peeringdb_ix_id = models.BigIntegerField(blank=True, null=True)
     ixf_ix_id = models.BigIntegerField(blank=True, null=True)
     country = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'infrastructure'
-        unique_together = (('shortname', 'ixp'),)
+        db_table = "infrastructure"
+        unique_together = (("shortname", "ixp"),)
 
 
 class Ipv4Address(models.Model):
-    vlanid = models.ForeignKey('Vlan', models.DO_NOTHING, db_column='vlanid', blank=True, null=True)
+    vlanid = models.ForeignKey(
+        "Vlan", models.DO_NOTHING, db_column="vlanid", blank=True, null=True
+    )
     address = models.CharField(max_length=16, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'ipv4address'
-        unique_together = (('vlanid', 'address'),)
+        db_table = "ipv4address"
+        unique_together = (("vlanid", "address"),)
 
 
 class Ipv6Address(models.Model):
-    vlanid = models.ForeignKey('Vlan', models.DO_NOTHING, db_column='vlanid', blank=True, null=True)
+    vlanid = models.ForeignKey(
+        "Vlan", models.DO_NOTHING, db_column="vlanid", blank=True, null=True
+    )
     address = models.CharField(max_length=40, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'ipv6address'
-        unique_together = (('vlanid', 'address'),)
+        db_table = "ipv6address"
+        unique_together = (("vlanid", "address"),)
 
 
 class IrrdbAsn(models.Model):
@@ -475,8 +565,8 @@ class IrrdbAsn(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'irrdb_asn'
-        unique_together = (('asn', 'protocol', 'customer'),)
+        db_table = "irrdb_asn"
+        unique_together = (("asn", "protocol", "customer"),)
 
 
 class IrrdbPrefix(models.Model):
@@ -489,8 +579,8 @@ class IrrdbPrefix(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'irrdb_prefix'
-        unique_together = (('prefix', 'protocol', 'customer'),)
+        db_table = "irrdb_prefix"
+        unique_together = (("prefix", "protocol", "customer"),)
 
 
 class Irrdbconfig(models.Model):
@@ -501,7 +591,7 @@ class Irrdbconfig(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'irrdbconfig'
+        db_table = "irrdbconfig"
 
 
 class Ixp(models.Model):
@@ -515,11 +605,11 @@ class Ixp(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'ixp'
+        db_table = "ixp"
 
 
 class L2Address(models.Model):
-    vlan_interface = models.ForeignKey('Vlaninterface', models.DO_NOTHING)
+    vlan_interface = models.ForeignKey("Vlaninterface", models.DO_NOTHING)
     mac = models.CharField(max_length=12, blank=True, null=True)
     firstseen = models.DateTimeField(blank=True, null=True)
     lastseen = models.DateTimeField(blank=True, null=True)
@@ -527,8 +617,8 @@ class L2Address(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'l2address'
-        unique_together = (('mac', 'vlan_interface'),)
+        db_table = "l2address"
+        unique_together = (("mac", "vlan_interface"),)
 
 
 class Location(models.Model):
@@ -549,7 +639,7 @@ class Location(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'location'
+        db_table = "location"
 
 
 class Logos(models.Model):
@@ -564,18 +654,24 @@ class Logos(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'logos'
+        db_table = "logos"
 
 
 class Macaddress(models.Model):
-    virtualinterfaceid = models.ForeignKey('Virtualinterface', models.DO_NOTHING, db_column='virtualinterfaceid', blank=True, null=True)
+    virtualinterfaceid = models.ForeignKey(
+        "Virtualinterface",
+        models.DO_NOTHING,
+        db_column="virtualinterfaceid",
+        blank=True,
+        null=True,
+    )
     firstseen = models.DateTimeField(blank=True, null=True)
     lastseen = models.DateTimeField(blank=True, null=True)
     mac = models.CharField(max_length=12, blank=True, null=True)
 
     class Meta:
         managed = True
-        db_table = 'macaddress'
+        db_table = "macaddress"
 
 
 class Migrations(models.Model):
@@ -584,11 +680,11 @@ class Migrations(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'migrations'
+        db_table = "migrations"
 
 
 class Netinfo(models.Model):
-    vlan = models.ForeignKey('Vlan', models.DO_NOTHING)
+    vlan = models.ForeignKey("Vlan", models.DO_NOTHING)
     protocol = models.IntegerField()
     property = models.CharField(max_length=255)
     ix = models.IntegerField()
@@ -596,11 +692,13 @@ class Netinfo(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'netinfo'
+        db_table = "netinfo"
 
 
 class Networkinfo(models.Model):
-    vlanid = models.ForeignKey('Vlan', models.DO_NOTHING, db_column='vlanid', blank=True, null=True)
+    vlanid = models.ForeignKey(
+        "Vlan", models.DO_NOTHING, db_column="vlanid", blank=True, null=True
+    )
     protocol = models.IntegerField(blank=True, null=True)
     network = models.CharField(max_length=255, blank=True, null=True)
     masklen = models.IntegerField(blank=True, null=True)
@@ -610,7 +708,7 @@ class Networkinfo(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'networkinfo'
+        db_table = "networkinfo"
 
 
 class Oui(models.Model):
@@ -619,7 +717,7 @@ class Oui(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'oui'
+        db_table = "oui"
 
 
 class PasswordResets(models.Model):
@@ -629,7 +727,7 @@ class PasswordResets(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'password_resets'
+        db_table = "password_resets"
 
 
 class PatchPanel(models.Model):
@@ -648,14 +746,18 @@ class PatchPanel(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'patch_panel'
+        db_table = "patch_panel"
 
 
 class PatchPanelPort(models.Model):
-    switch_port = models.OneToOneField('Switchport', models.DO_NOTHING, blank=True, null=True)
-    patch_panel = models.ForeignKey(PatchPanel, models.DO_NOTHING, blank=True, null=True)
+    switch_port = models.OneToOneField(
+        "Switchport", models.DO_NOTHING, blank=True, null=True
+    )
+    patch_panel = models.ForeignKey(
+        PatchPanel, models.DO_NOTHING, blank=True, null=True
+    )
     customer = models.ForeignKey(Cust, models.DO_NOTHING, blank=True, null=True)
-    duplex_master = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    duplex_master = models.ForeignKey("self", models.DO_NOTHING, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     number = models.SmallIntegerField()
     state = models.IntegerField()
@@ -676,11 +778,13 @@ class PatchPanelPort(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'patch_panel_port'
+        db_table = "patch_panel_port"
 
 
 class PatchPanelPortFile(models.Model):
-    patch_panel_port = models.ForeignKey(PatchPanelPort, models.DO_NOTHING, blank=True, null=True)
+    patch_panel_port = models.ForeignKey(
+        PatchPanelPort, models.DO_NOTHING, blank=True, null=True
+    )
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     uploaded_at = models.DateTimeField()
@@ -691,12 +795,14 @@ class PatchPanelPortFile(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'patch_panel_port_file'
+        db_table = "patch_panel_port_file"
 
 
 class PatchPanelPortHistory(models.Model):
-    patch_panel_port = models.ForeignKey(PatchPanelPort, models.DO_NOTHING, blank=True, null=True)
-    duplex_master = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    patch_panel_port = models.ForeignKey(
+        PatchPanelPort, models.DO_NOTHING, blank=True, null=True
+    )
+    duplex_master = models.ForeignKey("self", models.DO_NOTHING, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     number = models.SmallIntegerField()
     state = models.IntegerField()
@@ -718,11 +824,13 @@ class PatchPanelPortHistory(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'patch_panel_port_history'
+        db_table = "patch_panel_port_history"
 
 
 class PatchPanelPortHistoryFile(models.Model):
-    patch_panel_port_history = models.ForeignKey(PatchPanelPortHistory, models.DO_NOTHING, blank=True, null=True)
+    patch_panel_port_history = models.ForeignKey(
+        PatchPanelPortHistory, models.DO_NOTHING, blank=True, null=True
+    )
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     uploaded_at = models.DateTimeField()
@@ -733,13 +841,21 @@ class PatchPanelPortHistoryFile(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'patch_panel_port_history_file'
+        db_table = "patch_panel_port_history_file"
 
 
 class PeeringManager(models.Model):
-    custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
-    peerid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='peerid', blank=True, null=True,
-                               related_name='peer')
+    custid = models.ForeignKey(
+        Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
+    peerid = models.ForeignKey(
+        Cust,
+        models.DO_NOTHING,
+        db_column="peerid",
+        blank=True,
+        null=True,
+        related_name="peer",
+    )
     email_last_sent = models.DateTimeField(blank=True, null=True)
     emails_sent = models.IntegerField(blank=True, null=True)
     peered = models.IntegerField(blank=True, null=True)
@@ -750,14 +866,26 @@ class PeeringManager(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'peering_manager'
+        db_table = "peering_manager"
 
 
 class PeeringMatrix(models.Model):
-    x_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='x_custid', blank=True, null=True,
-                                 related_name='x_customer')
-    y_custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='y_custid', blank=True, null=True,
-                                 related_name='y_customer')
+    x_custid = models.ForeignKey(
+        Cust,
+        models.DO_NOTHING,
+        db_column="x_custid",
+        blank=True,
+        null=True,
+        related_name="x_customer",
+    )
+    y_custid = models.ForeignKey(
+        Cust,
+        models.DO_NOTHING,
+        db_column="y_custid",
+        blank=True,
+        null=True,
+        related_name="y_customer",
+    )
     vlan = models.IntegerField(blank=True, null=True)
     x_as = models.IntegerField(blank=True, null=True)
     y_as = models.IntegerField(blank=True, null=True)
@@ -766,13 +894,23 @@ class PeeringMatrix(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'peering_matrix'
+        db_table = "peering_matrix"
 
 
 class Physicalinterface(models.Model):
-    switchportid = models.OneToOneField('Switchport', models.DO_NOTHING, db_column='switchportid', blank=True, null=True)
-    fanout_physical_interface = models.OneToOneField('self', models.DO_NOTHING, blank=True, null=True)
-    virtualinterfaceid = models.ForeignKey('Virtualinterface', models.DO_NOTHING, db_column='virtualinterfaceid', blank=True, null=True)
+    switchportid = models.OneToOneField(
+        "Switchport", models.DO_NOTHING, db_column="switchportid", blank=True, null=True
+    )
+    fanout_physical_interface = models.OneToOneField(
+        "self", models.DO_NOTHING, blank=True, null=True
+    )
+    virtualinterfaceid = models.ForeignKey(
+        "Virtualinterface",
+        models.DO_NOTHING,
+        db_column="virtualinterfaceid",
+        blank=True,
+        null=True,
+    )
     status = models.IntegerField(blank=True, null=True)
     speed = models.IntegerField(blank=True, null=True)
     duplex = models.CharField(max_length=16, blank=True, null=True)
@@ -781,11 +919,11 @@ class Physicalinterface(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'physicalinterface'
+        db_table = "physicalinterface"
 
 
 class Routers(models.Model):
-    vlan = models.ForeignKey('Vlan', models.DO_NOTHING)
+    vlan = models.ForeignKey("Vlan", models.DO_NOTHING)
     handle = models.CharField(unique=True, max_length=255)
     protocol = models.PositiveSmallIntegerField()
     type = models.PositiveSmallIntegerField()
@@ -812,11 +950,13 @@ class Routers(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'routers'
+        db_table = "routers"
 
 
 class RsPrefixes(models.Model):
-    custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
+    custid = models.ForeignKey(
+        Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
     timestamp = models.DateTimeField(blank=True, null=True)
     prefix = models.CharField(max_length=64, blank=True, null=True)
     protocol = models.IntegerField(blank=True, null=True)
@@ -825,7 +965,7 @@ class RsPrefixes(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'rs_prefixes'
+        db_table = "rs_prefixes"
 
 
 class Sessions(models.Model):
@@ -838,23 +978,35 @@ class Sessions(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'sessions'
+        db_table = "sessions"
 
 
 class SflowReceiver(models.Model):
-    virtual_interface = models.ForeignKey('Virtualinterface', models.DO_NOTHING, blank=True, null=True)
+    virtual_interface = models.ForeignKey(
+        "Virtualinterface", models.DO_NOTHING, blank=True, null=True
+    )
     dst_ip = models.CharField(max_length=255)
     dst_port = models.IntegerField()
 
     class Meta:
         managed = True
-        db_table = 'sflow_receiver'
+        db_table = "sflow_receiver"
 
 
 class Switch(models.Model):
-    infrastructure = models.ForeignKey(Infrastructure, models.DO_NOTHING, db_column='infrastructure', blank=True, null=True)
-    cabinetid = models.ForeignKey(Cabinet, models.DO_NOTHING, db_column='cabinetid', blank=True, null=True)
-    vendorid = models.ForeignKey('Vendor', models.DO_NOTHING, db_column='vendorid', blank=True, null=True)
+    infrastructure = models.ForeignKey(
+        Infrastructure,
+        models.DO_NOTHING,
+        db_column="infrastructure",
+        blank=True,
+        null=True,
+    )
+    cabinetid = models.ForeignKey(
+        Cabinet, models.DO_NOTHING, db_column="cabinetid", blank=True, null=True
+    )
+    vendorid = models.ForeignKey(
+        "Vendor", models.DO_NOTHING, db_column="vendorid", blank=True, null=True
+    )
     name = models.CharField(unique=True, max_length=255, blank=True, null=True)
     asn = models.PositiveIntegerField(blank=True, null=True)
     hostname = models.CharField(max_length=255, blank=True, null=True)
@@ -867,11 +1019,21 @@ class Switch(models.Model):
     model = models.CharField(max_length=255, blank=True, null=True)
     active = models.IntegerField(blank=True, null=True)
     os = models.CharField(max_length=255, blank=True, null=True)
-    osdate = models.DateTimeField(db_column='osDate', blank=True, null=True)  # Field name made lowercase.
-    osversion = models.CharField(db_column='osVersion', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    serialnumber = models.CharField(db_column='serialNumber', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    mausupported = models.IntegerField(db_column='mauSupported', blank=True, null=True)  # Field name made lowercase.
-    lastpolled = models.DateTimeField(db_column='lastPolled', blank=True, null=True)  # Field name made lowercase.
+    osdate = models.DateTimeField(
+        db_column="osDate", blank=True, null=True
+    )  # Field name made lowercase.
+    osversion = models.CharField(
+        db_column="osVersion", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    serialnumber = models.CharField(
+        db_column="serialNumber", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    mausupported = models.IntegerField(
+        db_column="mauSupported", blank=True, null=True
+    )  # Field name made lowercase.
+    lastpolled = models.DateTimeField(
+        db_column="lastPolled", blank=True, null=True
+    )  # Field name made lowercase.
     snmp_engine_time = models.BigIntegerField(blank=True, null=True)
     snmp_system_uptime = models.BigIntegerField(blank=True, null=True)
     snmp_engine_boots = models.BigIntegerField(blank=True, null=True)
@@ -879,35 +1041,71 @@ class Switch(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'switch'
+        db_table = "switch"
 
 
 class Switchport(models.Model):
-    switchid = models.ForeignKey(Switch, models.DO_NOTHING, db_column='switchid', blank=True, null=True)
+    switchid = models.ForeignKey(
+        Switch, models.DO_NOTHING, db_column="switchid", blank=True, null=True
+    )
     type = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     active = models.IntegerField()
-    ifindex = models.IntegerField(db_column='ifIndex', blank=True, null=True)  # Field name made lowercase.
-    ifname = models.CharField(db_column='ifName', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    ifalias = models.CharField(db_column='ifAlias', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    ifhighspeed = models.IntegerField(db_column='ifHighSpeed', blank=True, null=True)  # Field name made lowercase.
-    ifmtu = models.IntegerField(db_column='ifMtu', blank=True, null=True)  # Field name made lowercase.
-    ifphysaddress = models.CharField(db_column='ifPhysAddress', max_length=17, blank=True, null=True)  # Field name made lowercase.
-    ifadminstatus = models.IntegerField(db_column='ifAdminStatus', blank=True, null=True)  # Field name made lowercase.
-    ifoperstatus = models.IntegerField(db_column='ifOperStatus', blank=True, null=True)  # Field name made lowercase.
-    iflastchange = models.IntegerField(db_column='ifLastChange', blank=True, null=True)  # Field name made lowercase.
-    lastsnmppoll = models.DateTimeField(db_column='lastSnmpPoll', blank=True, null=True)  # Field name made lowercase.
-    lagifindex = models.IntegerField(db_column='lagIfIndex', blank=True, null=True)  # Field name made lowercase.
-    mautype = models.CharField(db_column='mauType', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    maustate = models.CharField(db_column='mauState', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    mauavailability = models.CharField(db_column='mauAvailability', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    maujacktype = models.CharField(db_column='mauJacktype', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    mauautonegsupported = models.IntegerField(db_column='mauAutoNegSupported', blank=True, null=True)  # Field name made lowercase.
-    mauautonegadminstate = models.IntegerField(db_column='mauAutoNegAdminState', blank=True, null=True)  # Field name made lowercase.
+    ifindex = models.IntegerField(
+        db_column="ifIndex", blank=True, null=True
+    )  # Field name made lowercase.
+    ifname = models.CharField(
+        db_column="ifName", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    ifalias = models.CharField(
+        db_column="ifAlias", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    ifhighspeed = models.IntegerField(
+        db_column="ifHighSpeed", blank=True, null=True
+    )  # Field name made lowercase.
+    ifmtu = models.IntegerField(
+        db_column="ifMtu", blank=True, null=True
+    )  # Field name made lowercase.
+    ifphysaddress = models.CharField(
+        db_column="ifPhysAddress", max_length=17, blank=True, null=True
+    )  # Field name made lowercase.
+    ifadminstatus = models.IntegerField(
+        db_column="ifAdminStatus", blank=True, null=True
+    )  # Field name made lowercase.
+    ifoperstatus = models.IntegerField(
+        db_column="ifOperStatus", blank=True, null=True
+    )  # Field name made lowercase.
+    iflastchange = models.IntegerField(
+        db_column="ifLastChange", blank=True, null=True
+    )  # Field name made lowercase.
+    lastsnmppoll = models.DateTimeField(
+        db_column="lastSnmpPoll", blank=True, null=True
+    )  # Field name made lowercase.
+    lagifindex = models.IntegerField(
+        db_column="lagIfIndex", blank=True, null=True
+    )  # Field name made lowercase.
+    mautype = models.CharField(
+        db_column="mauType", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    maustate = models.CharField(
+        db_column="mauState", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    mauavailability = models.CharField(
+        db_column="mauAvailability", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    maujacktype = models.CharField(
+        db_column="mauJacktype", max_length=255, blank=True, null=True
+    )  # Field name made lowercase.
+    mauautonegsupported = models.IntegerField(
+        db_column="mauAutoNegSupported", blank=True, null=True
+    )  # Field name made lowercase.
+    mauautonegadminstate = models.IntegerField(
+        db_column="mauAutoNegAdminState", blank=True, null=True
+    )  # Field name made lowercase.
 
     class Meta:
         managed = True
-        db_table = 'switchport'
+        db_table = "switchport"
 
 
 class TelescopeEntries(models.Model):
@@ -922,16 +1120,18 @@ class TelescopeEntries(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'telescope_entries'
+        db_table = "telescope_entries"
 
 
 class TelescopeEntriesTags(models.Model):
-    entry_uuid = models.ForeignKey(TelescopeEntries, models.DO_NOTHING, db_column='entry_uuid')
+    entry_uuid = models.ForeignKey(
+        TelescopeEntries, models.DO_NOTHING, db_column="entry_uuid"
+    )
     tag = models.CharField(max_length=255)
 
     class Meta:
         managed = True
-        db_table = 'telescope_entries_tags'
+        db_table = "telescope_entries_tags"
 
 
 class TelescopeMonitoring(models.Model):
@@ -939,7 +1139,7 @@ class TelescopeMonitoring(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'telescope_monitoring'
+        db_table = "telescope_monitoring"
 
 
 class Traffic95Th(models.Model):
@@ -951,7 +1151,7 @@ class Traffic95Th(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'traffic_95th'
+        db_table = "traffic_95th"
 
 
 class Traffic95ThMonthly(models.Model):
@@ -962,7 +1162,7 @@ class Traffic95ThMonthly(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'traffic_95th_monthly'
+        db_table = "traffic_95th_monthly"
 
 
 class TrafficDaily(models.Model):
@@ -998,7 +1198,7 @@ class TrafficDaily(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'traffic_daily'
+        db_table = "traffic_daily"
 
 
 class TrafficDailyPhysInts(models.Model):
@@ -1041,21 +1241,27 @@ class TrafficDailyPhysInts(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'traffic_daily_phys_ints'
+        db_table = "traffic_daily_phys_ints"
 
 
 class User(models.Model):
-    custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
+    custid = models.ForeignKey(
+        Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
     name = models.CharField(max_length=255, blank=True, null=True)
     username = models.CharField(unique=True, max_length=255, blank=True, null=True)
     password = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
-    authorisedmobile = models.CharField(db_column='authorisedMobile', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    authorisedmobile = models.CharField(
+        db_column="authorisedMobile", max_length=30, blank=True, null=True
+    )  # Field name made lowercase.
     uid = models.IntegerField(blank=True, null=True)
     privs = models.IntegerField(blank=True, null=True)
     disabled = models.IntegerField(blank=True, null=True)
     peeringdb_id = models.BigIntegerField(unique=True, blank=True, null=True)
-    extra_attributes = models.TextField(blank=True, null=True)  # This field type is a guess.
+    extra_attributes = models.TextField(
+        blank=True, null=True
+    )  # This field type is a guess.
     lastupdated = models.DateTimeField(blank=True, null=True)
     lastupdatedby = models.IntegerField(blank=True, null=True)
     creator = models.CharField(max_length=255, blank=True, null=True)
@@ -1063,7 +1269,7 @@ class User(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user'
+        db_table = "user"
 
 
 class User2Fa(models.Model):
@@ -1075,12 +1281,14 @@ class User2Fa(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user_2fa'
+        db_table = "user_2fa"
 
 
 class UserLogins(models.Model):
     id = models.BigAutoField(primary_key=True)
-    customer_to_user = models.ForeignKey(CustomerToUsers, models.DO_NOTHING, blank=True, null=True)
+    customer_to_user = models.ForeignKey(
+        CustomerToUsers, models.DO_NOTHING, blank=True, null=True
+    )
     user_id = models.IntegerField(blank=True, null=True)
     ip = models.CharField(max_length=39)
     at = models.DateTimeField()
@@ -1088,7 +1296,7 @@ class UserLogins(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user_logins'
+        db_table = "user_logins"
 
 
 class UserPref(models.Model):
@@ -1101,8 +1309,8 @@ class UserPref(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user_pref'
-        unique_together = (('user', 'attribute', 'op', 'ix'),)
+        db_table = "user_pref"
+        unique_together = (("user", "attribute", "op", "ix"),)
 
 
 class UserRememberTokens(models.Model):
@@ -1117,8 +1325,8 @@ class UserRememberTokens(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'user_remember_tokens'
-        unique_together = (('user', 'token'),)
+        db_table = "user_remember_tokens"
+        unique_together = (("user", "token"),)
 
 
 class Vendor(models.Model):
@@ -1129,11 +1337,13 @@ class Vendor(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'vendor'
+        db_table = "vendor"
 
 
 class Virtualinterface(models.Model):
-    custid = models.ForeignKey(Cust, models.DO_NOTHING, db_column='custid', blank=True, null=True)
+    custid = models.ForeignKey(
+        Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
+    )
     name = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     mtu = models.IntegerField(blank=True, null=True)
@@ -1144,11 +1354,13 @@ class Virtualinterface(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'virtualinterface'
+        db_table = "virtualinterface"
 
 
 class Vlan(models.Model):
-    infrastructureid = models.ForeignKey(Infrastructure, models.DO_NOTHING, db_column='infrastructureid')
+    infrastructureid = models.ForeignKey(
+        Infrastructure, models.DO_NOTHING, db_column="infrastructureid"
+    )
     name = models.CharField(max_length=255, blank=True, null=True)
     config_name = models.CharField(max_length=32, blank=True, null=True)
     number = models.IntegerField(blank=True, null=True)
@@ -1159,15 +1371,27 @@ class Vlan(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'vlan'
-        unique_together = (('infrastructureid', 'config_name'),)
+        db_table = "vlan"
+        unique_together = (("infrastructureid", "config_name"),)
 
 
 class Vlaninterface(models.Model):
-    ipv4addressid = models.OneToOneField(Ipv4Address, models.DO_NOTHING, db_column='ipv4addressid', blank=True, null=True)
-    ipv6addressid = models.OneToOneField(Ipv6Address, models.DO_NOTHING, db_column='ipv6addressid', blank=True, null=True)
-    virtualinterfaceid = models.ForeignKey(Virtualinterface, models.DO_NOTHING, db_column='virtualinterfaceid', blank=True, null=True)
-    vlanid = models.ForeignKey(Vlan, models.DO_NOTHING, db_column='vlanid', blank=True, null=True)
+    ipv4addressid = models.OneToOneField(
+        Ipv4Address, models.DO_NOTHING, db_column="ipv4addressid", blank=True, null=True
+    )
+    ipv6addressid = models.OneToOneField(
+        Ipv6Address, models.DO_NOTHING, db_column="ipv6addressid", blank=True, null=True
+    )
+    virtualinterfaceid = models.ForeignKey(
+        Virtualinterface,
+        models.DO_NOTHING,
+        db_column="virtualinterfaceid",
+        blank=True,
+        null=True,
+    )
+    vlanid = models.ForeignKey(
+        Vlan, models.DO_NOTHING, db_column="vlanid", blank=True, null=True
+    )
     ipv4enabled = models.IntegerField(blank=True, null=True)
     ipv4hostname = models.CharField(max_length=255, blank=True, null=True)
     ipv6enabled = models.IntegerField(blank=True, null=True)
@@ -1190,4 +1414,4 @@ class Vlaninterface(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'vlaninterface'
+        db_table = "vlaninterface"

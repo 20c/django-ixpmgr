@@ -71,17 +71,15 @@ class Command(BaseCommand):
         else:
             if errorStatus:
                 print(
-                    (
-                        "%s at %s"
-                        % (
-                            errorStatus.prettyPrint(),
-                            errorIndex and varBinds[int(errorIndex) - 1] or "?",
-                        )
+                    "%s at %s"
+                    % (
+                        errorStatus.prettyPrint(),
+                        errorIndex and varBinds[int(errorIndex) - 1] or "?",
                     )
                 )
             else:
                 for name, val in varBinds:
-                    print(("%s = %s" % (name.prettyPrint(), val.prettyPrint())))
+                    print(f"{name.prettyPrint()} = {val.prettyPrint()}")
 
         load("IF-MIB")
         load("SNMPv2-MIB")

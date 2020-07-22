@@ -9,14 +9,15 @@ class AccountSerializer(ixser.Account, serializers.ModelSerializer):
         many = True
         model = models.Account
         fields = [
-            'name',
-            'address',
-            'managing_account',
-            'legal_name',
-            'billing_information',
-            'external_ref',
-            'discoverable',
+            "name",
+            "address",
+            "managing_account",
+            "legal_name",
+            "billing_information",
+            "external_ref",
+            "discoverable",
         ]
+
 
 class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
     class Meta:
@@ -34,6 +35,7 @@ class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
             "organisation_name",
             "cluster",
         ]
+
 
 class DeviceSerializer(ixser.Device, serializers.ModelSerializer):
     class Meta:
