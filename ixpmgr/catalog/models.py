@@ -1,9 +1,10 @@
 from django.db import models
 import django_ixpmgr.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager, NullField
+from django_ixpmgr.model_util import *
 
 
-class Facility(ProxyModel, ixpmgr_models.Location):
+class Facility(ixpmgr_models.Location):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 

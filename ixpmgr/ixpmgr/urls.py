@@ -22,6 +22,8 @@ from ixpmgr_server import views
 router = routers.DefaultRouter()
 router.register(r"accounts", views.AccountViewSet)
 router.register(r"facilities", views.FacilityViewSet)
+router.register(r"member-joining-rules", views.MemberJoiningRuleViewSet, basename='member-joining-rules')
+router.register(r"network-services", views.NetworkServiceViewSet, basename='network-services')
 
 urlpatterns = [
     path("admin/", admin.site.urls),

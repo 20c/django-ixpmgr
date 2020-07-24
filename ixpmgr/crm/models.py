@@ -1,13 +1,14 @@
 from django.db import models
-import django_ixpmgr.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager
+import django_ixpmgr.v57.models as ixpmgr_models
+from django_ixpmgr.model_util import ProxyField, ProxyManager
 
 
 def join_address(*parts):
     return "\n".join(p for p in parts if p) or None
 
 
-class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
+class RegAddress(ixpmgr_models.CompanyRegistrationDetail):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
@@ -26,7 +27,8 @@ class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
         return None
 
 
-class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
+class BillingInformation(ixpmgr_models.CompanyBillingDetail):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
@@ -59,18 +61,19 @@ class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
         super().save(*args, **kwargs)
 
 
-class Account(ProxyModel, ixpmgr_models.Cust):
+class Account(ixpmgr_models.Cust):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
     Source = ixpmgr_models.Cust
 
+    # name => shortname?
     address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
     billing_information = ProxyField(
         Source.company_billing_details, proxy_model=BillingInformation
     )
 
-    # todo
     @property
     def managing_account(self):
         pass
@@ -96,11 +99,10 @@ class Account(ProxyModel, ixpmgr_models.Cust):
         super().save(*args, **kwargs)
 
 
-class Contact(ProxyModel, ixpmgr_models.Contact):
+class Contact(ixpmgr_models.Contact):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
-
-    pass
 
 
 class Role(models.Model):
