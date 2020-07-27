@@ -35,14 +35,3 @@ class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
             "organisation_name",
             "cluster",
         ]
-
-
-class DeviceSerializer(ixser.Device, serializers.ModelSerializer):
-    class Meta:
-        many = True
-        model = models.Device
-        fields = [
-            "name",
-            "capabilities",
-            "physical_facility",
-        ]
