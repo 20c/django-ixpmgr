@@ -85,7 +85,7 @@ class ProxyFieldMixin:
         sup = super()
         contrib = getattr(sup, "contribute_to_class", None)
         if contrib:
-            contrib(model, name, virtual_only=True)
+            contrib(model, name)
         setattr(model, name, self)
         model.proxies.add_proxy_field(name)
 
