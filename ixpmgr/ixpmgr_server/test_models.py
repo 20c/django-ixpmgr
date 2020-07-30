@@ -2,9 +2,11 @@ from django.test import TestCase
 
 from django_ixpmgr import models as ixpmgr_models
 from ixpmgr_server.models import Account, BillingInformation, RegAddress
+from ixpmgr_server.models import Facility
+from ixpmgr_server.models import ExchangeLanNetworkService, AllowMemberJoiningRule
 
 
-def make_chix():
+def make_chix_account():
     account = Account.proxies.create(
         name="ChIX",
         address=RegAddress.proxies.create(
@@ -43,13 +45,38 @@ def make_chix():
     )
     return account
 
+def make_ixp():
+    return ixpmgr_models.Ixp.objects.create()
+
+def make_exchangelan(ixp=None):
+    if not ixp: ixp = make_ixp()
+    xlan = ExchangeLanNetworkService.proxies.create(
+        peeringdb_ixid=42,
+        ixp=ixp,
+    )
+    return xlan
 
 class AccountTestCase(TestCase):
+    databases = ('ixpmanager', 'default')
+
     def setUp(self):
-        self.acc1 = make_chix()
+        self.acc1 = make_chix_account()
 
     def test_get(self):
         acc = Account.objects.get(pk=self.acc1.id)
         cust = ixpmgr_models.Cust.objects.get(pk=self.acc1.id)
         self.assertEqual(acc.name, "ChIX")
         self.assertEqual(cust.name, "ChIX")
+
+class ExchangeLanNetworkServiceTestCase(TestCase):
+    databases = ('ixpmanager', 'default')
+
+    def setUp(self):
+        self.ixp = make_ixp()
+        self.xlan = make_exchangelan(self.ixp)
+
+    def test_get(self):
+        xlan = ExchangeLanNetworkService.objects.get(pk=self.xlan.id)
+        infra = ixpmgr_models.Infrastructure.objects.get(pk=self.xlan.id)
+        self.assertEqual(xlan.peeringdb_ixid, 42)
+        self.assertEqual(xlan.ixp, self.ixp)
