@@ -4,6 +4,7 @@ import django_ixpmgr.v57.models as ixpmgr_models
 from django_ixpmgr.model_util import *
 
 from crm import models as crm_models
+from ipam import models as ipam_models
 
 # "Polymorphic" models: concrete inheritance to build multiple proxy models,
 # which are collated by serializers
@@ -47,11 +48,20 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
     network_features = NullField()
     product_offering = NullField()
     all_nsc_required_contact_roles = NullField()
-    ip_addresses = NullField()
+
     peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
     ixfdb_ixid = ProxyField(Source.ixf_ix_id)
     # state = NullField()
     # status = NullField()
+
+    @property
+    def ip_addresses(self):
+        ipv4 = []
+        for vlan in self.vlan_set.all():
+            # addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
+            addrs = vlan.ipv4address_set.all()
+            ipv4.extend(addrs)
+        return ipv4
 
     def save(self, *args, **kwargs):
         self.isprimary = True

@@ -56,6 +56,18 @@ def make_exchangelan(ixp=None):
     )
     return xlan
 
+def make_ip(addr):
+    return ixpmgr_models.Ipv4Address.objects.create(address="1.2.3.4")
+
+def make_vlan(xlan, ip):
+    vlan = ixpmgr_models.Vlan.objects.create(
+        infrastructureid=xlan,
+        private=False,
+        peering_matrix=0,
+        peering_manager=0)
+    vlan.ipv4address_set.add(ip)
+    return vlan
+
 class AccountTestCase(TestCase):
     databases = ('ixpmanager', 'default')
 
