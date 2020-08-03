@@ -34,14 +34,17 @@ REST_FRAMEWORK = {
 
 # Application definition
 
-INSTALLED_APPS = [
-    "ixpmgr",
+IXAPI_NAMESPACES = [
     "crm",
     "catalog",
     "service",
     "ipam",
     "config",
-    "django_ixpmgr",
+]
+
+INSTALLED_APPS = [
+    *IXAPI_NAMESPACES,
+    "django_ixpmgr.v57",
     "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,7 +64,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ixpmgr.urls"
+ROOT_URLCONF = "ixapi.urls"
 
 TEMPLATES = [
     {
@@ -79,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "ixpmgr.wsgi.application"
+WSGI_APPLICATION = "ixapi.wsgi.application"
 
 
 # Database
