@@ -33,6 +33,8 @@ REST_FRAMEWORK = {
 }
 
 # Application definition
+IXPMGR_VERSION = "5.7"
+IXPMGR_APP = "django_ixpmgr.v57.IxpManagerConfig"
 
 IXAPI_NAMESPACES = [
     "crm",
@@ -44,7 +46,7 @@ IXAPI_NAMESPACES = [
 
 INSTALLED_APPS = [
     *IXAPI_NAMESPACES,
-    "django_ixpmgr.v57",
+    IXPMGR_APP,
     "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",

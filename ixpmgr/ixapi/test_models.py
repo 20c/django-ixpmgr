@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from django_ixpmgr import models as ixpmgr_models
+from django_ixpmgr.v57 import models as ixpmgr_models
 from ixpmgr_server.models import Account, BillingInformation, RegAddress
 from ixpmgr_server.models import Facility
 from ixpmgr_server.models import ExchangeLanNetworkService, AllowMemberJoiningRule
@@ -9,6 +9,7 @@ from ixpmgr_server.models import ExchangeLanNetworkService, AllowMemberJoiningRu
 def make_chix_account():
     account = Account.proxies.create(
         name="ChIX",
+        status=1, # todo - "normal" status?
         address=RegAddress.proxies.create(
             country="US",
             locality="Chicago",
@@ -22,7 +23,7 @@ def make_chix_account():
             name="William",
             billingaddress1="123 Billings St.",
             locality="New York",
-            region="NY",
+            # region="NY",
             postal_code="28305",
         ),
     )
