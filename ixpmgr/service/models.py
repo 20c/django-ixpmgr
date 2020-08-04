@@ -1,5 +1,7 @@
 from django.db import models
 
+from ixapi_schema.v2.entities.events import State
+
 import django_ixpmgr.v57.models as ixpmgr_models
 from django_ixpmgr.model_util import *
 
@@ -25,9 +27,9 @@ class AllowMemberJoiningRule(ixpmgr_models.Cust):
     capacity_max = NullField()
     # type = ConstField('whitelist')
 
-class DenyMemberJoiningRule(models.Model):
+class DenyMemberJoiningRule(models.Model): pass
     # class Meta: proxy = True
-    Source = ixpmgr_models.Cust
+    # Source = ixpmgr_models.Cust
     # type = ConstField('blacklist')
 
 
@@ -37,7 +39,6 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
     proxies = ProxyManager()
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure
-    # proxy_source = models.OneToOneField(Source, on_delete=models.CASCADE, primary_key=True)
 
     managing_account = NullField()
     consuming_account = NullField()
@@ -51,15 +52,28 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
 
     peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
     ixfdb_ixid = ProxyField(Source.ixf_ix_id)
-    # state = NullField()
-    # status = NullField()
+
+    @property
+    def state(self):
+        # todo - placeholder values for cust status
+        source_state_map = {
+            0: State.DECOMMISSIONED, # not commissioned
+            1: State.PRODUCTION, # normal
+            2: State.ARCHIVED, # suspended
+        }
+        custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
+        cust_status = custixp.customer.status
+        if cust_status is None: return None
+        return source_state_map[cust_status]
+
+    status = NullField()
 
     @property
     def ip_addresses(self):
         ipv4 = []
         for vlan in self.vlan_set.all():
-            # addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
-            addrs = vlan.ipv4address_set.all()
+            addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
+            # addrs = vlan.ipv4address_set.all()
             ipv4.extend(addrs)
         return ipv4
 

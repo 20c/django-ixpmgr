@@ -7,12 +7,14 @@ from django_ixpmgr.model_util import *
 class IpAddress(ixpmgr_models.Ipv4Address):
     class Meta: proxy=True
     proxies = ProxyManager()
+    Source = ixpmgr_models.Ipv4Address
 
     managing_account = NullField()
     consuming_account = NullField()
     external_ref = NullField()
     version = ConstField(4)
     # address = ProxyField(Source.address)
+    pk = ProxyField(Source.address)
     prefix_length = ConstField(0)
     fqdn = NullField()
     valid_not_before = NullField()

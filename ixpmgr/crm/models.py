@@ -43,7 +43,6 @@ class BillingInformation(ixpmgr_models.CompanyBillingDetail):
 
     country = ProxyField(Source.billingcountry)  # max=2
     locality = ProxyField(Source.billingtowncity)
-    # region = ProxyField(Source.jurisdiction)
     postal_code = ProxyField(Source.billingpostcode)
 
     @property

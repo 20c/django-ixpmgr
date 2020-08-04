@@ -111,8 +111,8 @@ class ExchangeLanNetworkServiceSerializer(ixser.ExchangeLanNetworkService, seria
             "ips",
             "peeringdb_ixid",
             "ixfdb_ixid",
-            # "state",
-            # "status",
+            "state",
+            "status",
         ]
 
 class P2PNetworkServiceSerializer(ixser.P2PNetworkService, serializers.ModelSerializer):
