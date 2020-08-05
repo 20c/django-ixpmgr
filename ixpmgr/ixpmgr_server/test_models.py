@@ -1,9 +1,15 @@
 from django.test import TestCase
 
-from django_ixpmgr import models as ixpmgr_models
-from ixpmgr_server.models import Account, BillingInformation, RegAddress
-from ixpmgr_server.models import Facility
-from ixpmgr_server.models import ExchangeLanNetworkService, AllowMemberJoiningRule
+from django_ixpmgr import (
+    models as ixpmgr_models,
+    const as ixpmgr_const,
+)
+from ixapi.models import (
+    Account, BillingInformation, RegAddress,
+    Facility,
+    ExchangeLanNetworkService, AllowMemberJoiningRule,
+    RouteserverNetworkFeature,
+)
 
 
 def make_chix_account():
@@ -57,7 +63,7 @@ def make_exchangelan(ixp=None):
     return xlan
 
 def make_ip(addr):
-    return ixpmgr_models.Ipv4Address.objects.create(address="1.2.3.4")
+    return ixpmgr_models.Ipv4Address.objects.create(address=addr)
 
 def make_vlan(xlan, ip):
     vlan = ixpmgr_models.Vlan.objects.create(
@@ -67,6 +73,14 @@ def make_vlan(xlan, ip):
         peering_manager=0)
     vlan.ipv4address_set.add(ip)
     return vlan
+
+def make_routeserver(handle, vlan, protocol=4, asn="69"):
+    rs = RouteserverNetworkFeature.objects.create(
+        handle=handle,
+        vlan=vlan, protocol=protocol, asn=asn,
+    )
+    return rs
+
 
 class AccountTestCase(TestCase):
     databases = ('ixpmanager', 'default')
@@ -80,6 +94,7 @@ class AccountTestCase(TestCase):
         self.assertEqual(acc.name, "ChIX")
         self.assertEqual(cust.name, "ChIX")
 
+
 class ExchangeLanNetworkServiceTestCase(TestCase):
     databases = ('ixpmanager', 'default')
 
@@ -92,3 +107,22 @@ class ExchangeLanNetworkServiceTestCase(TestCase):
         infra = ixpmgr_models.Infrastructure.objects.get(pk=self.xlan.id)
         self.assertEqual(xlan.peeringdb_ixid, 42)
         self.assertEqual(xlan.ixp, self.ixp)
+
+
+class RouteserverNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
+    databases = ('ixpmanager', 'default')
+
+    def setUp(self):
+        super().setUp()
+        Router = ixpmgr_const.Router
+        protocol = Router.PROTOCOL_IPV4
+        ip = make_ip("1.2.3.4")
+        self.vlan = make_vlan(self.xlan, ip)
+        self.rs = make_routeserver(
+            "handle1",
+            self.vlan, protocol)
+
+    def test_get(self):
+        features = self.xlan.network_features
+        self.assertEqual(self.vlan, self.rs.vlan)
+        self.assertTrue(self.rs in features)

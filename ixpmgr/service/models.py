@@ -1,8 +1,17 @@
+from itertools import chain
+from typing import List
+
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
-from ixapi_schema.v2.entities.events import State
-
-import django_ixpmgr.v57.models as ixpmgr_models
+from ixapi_schema.v2 import (
+    entities as schema_entities,
+    constants as schema_constants,
+)
+from django_ixpmgr.v57 import (
+    models as ixpmgr_models,
+    const as ixpmgr_const,
+)
 from django_ixpmgr.model_util import *
 
 from crm import models as crm_models
@@ -35,7 +44,7 @@ class DenyMemberJoiningRule(models.Model): pass
 
 class NetworkService(models.Model): pass
 
-class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
+class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
     proxies = ProxyManager()
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure
@@ -46,7 +55,15 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
 
     # name => shortname?
     metro_area = ConstField("IDK")
-    network_features = NullField()
+
+    @property
+    def network_features(self):
+        qsets = (
+            RouteserverNetworkFeature.objects.filter(vlan=vlan).all()
+            for vlan in self.vlan_set.all()
+        )
+        return list(chain(*qsets))
+
     product_offering = NullField()
     all_nsc_required_contact_roles = NullField()
 
@@ -55,13 +72,17 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure,):
 
     @property
     def state(self):
-        # todo - placeholder values for cust status
+        State = schema_entities.events.State
         source_state_map = {
+            # todo - placeholder values for cust status
             0: State.DECOMMISSIONED, # not commissioned
-            1: State.PRODUCTION, # normal
-            2: State.ARCHIVED, # suspended
+            1: State.PRODUCTION,     # normal
+            2: State.ARCHIVED,       # suspended
         }
-        custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
+        try:
+            custixp = ixpmgr_models.CustomerToIxp.objects.get(ixp=self.ixp)
+        except ObjectDoesNotExist:
+            return None
         cust_status = custixp.customer.status
         if cust_status is None: return None
         return source_state_map[cust_status]
@@ -92,11 +113,51 @@ class NetworkFeature(models.Model):
     pass
 
 
+class RouteserverNetworkFeature(ixpmgr_models.Routers):
+    proxies = ProxyManager()
+    class Meta: proxy = True
+    Source = ixpmgr_models.Infrastructure
+
+    # asn inherited
+    fqdn = ConstField("example.com")
+    required = ConstField(False)
+    nfc_required_contact_roles = NullField()
+
+    @property
+    def network_service(self):
+        try:
+            return ExchangeLanNetworkService.objects.get(vlan=self.vlan)
+        except ObjectDoesNotExist:
+            return None
+
+    looking_glass_url = ConstField("https://lg.moon-ix.net/rs1")
+
+    @property
+    def address_families(self) -> List[str]:
+        AddressFamilies = schema_constants.ipam.AddressFamilies
+        afs = {
+            ixpmgr_const.Router.PROTOCOL_IPV4: AddressFamilies.AF_INET,
+            ixpmgr_const.Router.PROTOCOL_IPV6: AddressFamilies.AF_INET6,
+        }
+        return [afs[self.protocol]]
+
+    session_mode = ConstField("public")
+    available_bgp_session_types = NullField()
+    ips = NullField()
+
+    def save(self, *a, **k):
+        self.type = ixpmgr_const.Router.TYPE_ROUTE_SERVER
+        self.api_type = ixpmgr_const.Router.API_TYPE_NONE
+        self.quarantine = 0
+        self.bgp_lc = 0
+        self.bgp_lc = 0
+        self.rpki = 0
+        self.rfc1997_passthru = 0
+        self.skip_md5 = 0
+        super().save()
+
+
 class BlackholingNetworkFeature(models.Model):
-    pass
-
-
-class RouteserverNetworkFeature(models.Model):
     pass
 
 
