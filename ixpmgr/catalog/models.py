@@ -21,6 +21,15 @@ class Facility(ixpmgr_models.Location):
 
     @property
     def operator_name(self):
+        return "Some Org"
+
+        # TODO: i don't think this is right for the operator / org
+        # name, it reads off of the colocation equipment table
+        # and there can be multiple customers in there
+        #
+        # Assumption for now, the org running ixp manager is the
+        # owning org, return dummy value for now
+
         cabinet = ixpmgr_models.Cabinet.objects.get(locationid=self.id)
         q = ixpmgr_models.Custkit.objects.filter(cabinetid=cabinet.id)
         if q.exists():
