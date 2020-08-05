@@ -56,6 +56,8 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
     # name => shortname?
     metro_area = ConstField("IDK")
 
+    type = "exchange_lan"
+
     @property
     def network_features(self):
         qsets = (
@@ -79,9 +81,8 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
             1: State.PRODUCTION,     # normal
             2: State.ARCHIVED,       # suspended
         }
-        try:
-            custixp = ixpmgr_models.CustomerToIxp.objects.get(ixp=self.ixp)
-        except ObjectDoesNotExist:
+        custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
+        if not custixp:
             return None
         cust_status = custixp.customer.status
         if cust_status is None: return None
@@ -91,12 +92,13 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
 
     @property
     def ip_addresses(self):
-        ipv4 = []
-        for vlan in self.vlan_set.all():
-            addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
-            # addrs = vlan.ipv4address_set.all()
-            ipv4.extend(addrs)
-        return ipv4
+        ip_addresses = []
+        for vlan in self.vlan_set.filter(private=0):
+            addrs_v4 = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
+            addrs_v6 = ipam_models.IpAddress.objects_v6.filter(vlanid=vlan.id)
+            ip_addresses.extend(addrs_v4)
+            ip_addresses.extend(addrs_v6)
+        return ip_addresses
 
     def save(self, *args, **kwargs):
         self.isprimary = True

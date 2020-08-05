@@ -114,6 +114,7 @@ class ExchangeLanNetworkServiceSerializer(ixser.ExchangeLanNetworkService, seria
             "ixfdb_ixid",
             "state",
             "status",
+            "type",
         ]
 
 class P2PNetworkServiceSerializer(ixser.P2PNetworkService, serializers.ModelSerializer):
@@ -176,8 +177,8 @@ class CloudNetworkServiceSerializer(ixser.CloudNetworkService, serializers.Model
 class NetworkServiceSerializer(PolymorphicSerializer):
     model_serializer_mapping = {
         models.ExchangeLanNetworkService: ExchangeLanNetworkServiceSerializer,
-        models.P2PNetworkService: P2PNetworkServiceSerializer,
-        models.P2MPNetworkService: P2MPNetworkServiceSerializer,
-        models.MP2MPNetworkService: MP2MPNetworkServiceSerializer,
-        models.CloudNetworkService: CloudNetworkServiceSerializer,
+#        models.P2PNetworkService: P2PNetworkServiceSerializer,
+#        models.P2MPNetworkService: P2MPNetworkServiceSerializer,
+#        models.MP2MPNetworkService: MP2MPNetworkServiceSerializer,
+#        models.CloudNetworkService: CloudNetworkServiceSerializer,
     }

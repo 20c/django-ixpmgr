@@ -5,6 +5,7 @@ writes to a source field, and supporting functions.
 from collections import namedtuple
 
 from django.db import models
+from django.db.models import sql
 from django.db.models.query_utils import DeferredAttribute
 from django.db.models.fields.related_descriptors import ForwardOneToOneDescriptor
 
@@ -139,3 +140,52 @@ def ConstField(value):
     return property(lambda self: value)
 def NullField():
     return ConstField(None)
+
+
+def redirected_manager(to_model):
+
+    """
+    returns a manager instance that is re-directed at a
+    different table.
+
+    this is currently for edge cases and requires similar
+    table schemas to work.
+
+    currently only used on ipam.IpAddress to fetch from the
+    correct table for each ip version
+
+    Argument(s):
+
+    - to_model (`Model`) - model class to redirect to on
+    the db level
+    """
+
+    class RedirectedQuery(sql.Query):
+        """
+        sql query class that overrides which model meta
+        to use to build the query.
+
+        this is where target table (db_table) gets locked in
+        """
+        def get_meta(self):
+            return to_model._meta
+
+    class RedirectedQuerySet(models.QuerySet):
+        """
+        Django queryset that uses RedirectedQuery for it's
+        queries
+        """
+        def __init__(self, model=None, query=None, using=None, hints=None):
+            super().__init__(model=model, query=query, using=using, hints=hints)
+            self.query = query or RedirectedQuery(self.model)
+
+    class RedirectedManager(models.Manager):
+        """
+        Django object manager that returns queryset redirected
+        to the table associated with the model specified
+        in `to_model`
+        """
+        def get_queryset(self):
+            return RedirectedQuerySet(self.model, using=self._db)
+
+    return RedirectedManager()

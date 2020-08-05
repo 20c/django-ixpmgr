@@ -8,6 +8,7 @@ class IpAddress(ixpmgr_models.Ipv4Address):
     class Meta: proxy=True
     proxies = ProxyManager()
     Source = ixpmgr_models.Ipv4Address
+    objects_v6 = redirected_manager(ixpmgr_models.Ipv6Address)
 
     managing_account = NullField()
     consuming_account = NullField()
