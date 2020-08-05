@@ -43,20 +43,40 @@ class DenyMemberJoiningRule(models.Model): pass
 
 
 class NetworkService(models.Model): pass
+    # XXX: where is this used?
+    # why not abstract?
 
-class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
+class NetworkServiceBase:
+
+    @property
+    def _customer(self):
+
+        """
+        Return the customer/account relationship for the network
+        service through customertoixp
+        """
+
+        custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
+        if not custixp:
+            return None
+        return custixp.customer
+
+
+
+class ExchangeLanNetworkService(NetworkServiceBase, ixpmgr_models.Infrastructure):
     proxies = ProxyManager()
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure
 
-    managing_account = NullField()
-    consuming_account = NullField()
     external_ref = NullField()
 
     # name => shortname?
     metro_area = ConstField("IDK")
-
-    type = "exchange_lan"
+    product_offering = NullField()
+    all_nsc_required_contact_roles = NullField()
+    peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
+    ixfdb_ixid = ProxyField(Source.ixf_ix_id)
+    status = NullField()
 
     @property
     def network_features(self):
@@ -66,29 +86,41 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure):
         )
         return list(chain(*qsets))
 
-    product_offering = NullField()
-    all_nsc_required_contact_roles = NullField()
 
-    peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
-    ixfdb_ixid = ProxyField(Source.ixf_ix_id)
+    @property
+    def managing_account(self):
+        return self._customer.id
+
+    @property
+    def consuming_account(self):
+        # TODO: looks like managing and consuming are the same
+        # in ixp manager? come back to this
+        return self._customer.id
+
+    @property
+    def type(self):
+        return "exchange_lan"
 
     @property
     def state(self):
         State = schema_entities.events.State
         source_state_map = {
             # todo - placeholder values for cust status
-            0: State.DECOMMISSIONED, # not commissioned
+            0: State.DECOMMISSIONED,
             1: State.PRODUCTION,     # normal
             2: State.ARCHIVED,       # suspended
         }
-        custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
-        if not custixp:
-            return None
-        cust_status = custixp.customer.status
-        if cust_status is None: return None
-        return source_state_map[cust_status]
+        customer = self._customer
 
-    status = NullField()
+        if not customer:
+            return None
+
+        cust_status = customer.status
+
+        if cust_status is None:
+            return None
+
+        return source_state_map[cust_status]
 
     @property
     def ip_addresses(self):
