@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from django_ixpmgr import (
+from django_ixpmgr.v57 import (
     models as ixpmgr_models,
     const as ixpmgr_const,
 )
@@ -15,6 +15,7 @@ from ixapi.models import (
 def make_chix_account():
     account = Account.proxies.create(
         name="ChIX",
+        status=1, # todo - "normal" status?
         address=RegAddress.proxies.create(
             country="US",
             locality="Chicago",
@@ -28,7 +29,7 @@ def make_chix_account():
             name="William",
             billingaddress1="123 Billings St.",
             locality="New York",
-            region="NY",
+            # region="NY",
             postal_code="28305",
         ),
     )
