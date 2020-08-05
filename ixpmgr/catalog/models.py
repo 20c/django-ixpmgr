@@ -23,8 +23,11 @@ class Facility(ixpmgr_models.Location):
     def operator_name(self):
         cabinet = ixpmgr_models.Cabinet.objects.get(locationid=self.id)
         q = ixpmgr_models.Custkit.objects.filter(cabinetid=cabinet.id)
-        cust = q.first().custid
-        return cust.name
+        if q.exists():
+            cust = q.first().custid
+            return cust.name
+        else:
+            return None
 
 
 class Device(models.Model):
