@@ -11,6 +11,26 @@ from ixapi.models import (
     RouteServerNetworkFeature,
 )
 
+# give account a location
+def make_custkit(locname):
+    location = ixpmgr_models.Location.objects.get_or_create(
+        shortname=locname,
+        name="ChIX main",
+        tag="chix",
+        address="420 Michigan Ave",
+        city="Chicago",
+        country="US",
+    )
+    cabinet = ixpmgr_models.Cabinet.objects.get_or_create(
+        locationid=location,
+        name="chix main cabinet",
+        cololocation="chix main coloc",
+        height=42,
+    )
+    ixpmgr_models.Custkit.objects.create(
+        custid=account, cabinetid=cabinet, name="chix kit",
+    )
+
 
 def make_chix_account():
     account = Account.proxies.create(
@@ -33,34 +53,24 @@ def make_chix_account():
             postal_code="28305",
         ),
     )
-    location = ixpmgr_models.Location.objects.create(
-        name="ChIX main",
-        shortname="chix1",
-        tag="chix",
-        address="420 Michigan Ave",
-        city="Chicago",
-        country="US",
-    )
-    cabinet = ixpmgr_models.Cabinet.objects.create(
-        locationid=location,
-        name="chix main cabinet",
-        cololocation="chix main coloc",
-        height=42,
-    )
-    ixpmgr_models.Custkit.objects.create(
-        custid=account, cabinetid=cabinet, name="chix kit",
-    )
+    location_shortname = "chix1"
     return account
 
 def make_ixp():
     return ixpmgr_models.Ixp.objects.create()
 
-def make_exchangelan(ixp=None):
-    if not ixp: ixp = make_ixp()
+# or make_infrastructure
+def make_exchangelan(acc: Account, ixp=None):
+    if not ixp:
+        ixp = make_ixp()
+    # set account
+    c2ixp = ixpmgr_models.CustomerToIxp.objects.create(customer=acc, ixp=ixp)
+
     xlan = ExchangeLanNetworkService.proxies.create(
         peeringdb_ixid=42,
         ixp=ixp,
     )
+
     return xlan
 
 def make_ip(addr):
@@ -78,10 +88,21 @@ def make_vlan(xlan, ip):
 def make_routeserver(handle, vlan, protocol=4, asn="69"):
     rs = RouteServerNetworkFeature.objects.create(
         handle=handle,
-        vlan=vlan, protocol=protocol, asn=asn,
+        vlan=vlan,
+        protocol=protocol,
+        asn=asn,
     )
     return rs
 
+
+def make_all():
+    addr = "1.2.3.4"
+    routerhandle = "handle1"
+    acc = make_chix_account()
+    el = make_exchangelan(acc)
+    ip = make_ip(addr)
+    vlan = make_vlan(el, ip)
+    rout = make_routeserver(routerhandle, vlan)
 
 class AccountTestCase(TestCase):
     databases = ('ixpmanager', 'default')
@@ -119,9 +140,7 @@ class RouteServerNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
         protocol = Router.PROTOCOL_IPV4
         ip = make_ip("1.2.3.4")
         self.vlan = make_vlan(self.xlan, ip)
-        self.rs = make_routeserver(
-            "handle1",
-            self.vlan, protocol)
+        self.rs = make_router("handle1", self.vlan, protocol)
 
     def test_get(self):
         features = self.xlan.network_features
