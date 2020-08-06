@@ -30,18 +30,29 @@ ALLOWED_HOSTS = ["*"]
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+    )
 }
 
 # Application definition
+IXPMGR_VERSION = "5.7"
+IXPMGR_APP = "django_ixpmgr.v57.IxpManagerConfig"
 
-INSTALLED_APPS = [
-    "ixpmgr",
+IXAPI_NAMESPACES = [
     "crm",
     "catalog",
     "service",
     "ipam",
     "config",
-    "django_ixpmgr",
+]
+
+INSTALLED_APPS = [
+    *IXAPI_NAMESPACES,
+    IXPMGR_APP,
     "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,7 +72,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ixpmgr.urls"
+ROOT_URLCONF = "ixapi.urls"
 
 TEMPLATES = [
     {
@@ -79,7 +90,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "ixpmgr.wsgi.application"
+WSGI_APPLICATION = "ixapi.wsgi.application"
 
 
 # Database

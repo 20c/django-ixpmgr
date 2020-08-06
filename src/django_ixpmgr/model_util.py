@@ -3,6 +3,7 @@ Utilities for defining proxy fields on proxy models which forward reads and
 writes to a source field, and supporting functions.
 """
 from collections import namedtuple
+from itertools import chain
 
 from django.db import models
 from django.db.models import sql
@@ -143,7 +144,6 @@ def NullField():
 
 
 def redirected_manager(to_model):
-
     """
     returns a manager instance that is re-directed at a
     different table.
@@ -172,7 +172,7 @@ def redirected_manager(to_model):
 
     class RedirectedQuerySet(models.QuerySet):
         """
-        Django queryset that uses RedirectedQuery for it's
+        Django queryset that uses RedirectedQuery for its
         queries
         """
         def __init__(self, model=None, query=None, using=None, hints=None):
@@ -189,3 +189,24 @@ def redirected_manager(to_model):
             return RedirectedQuerySet(self.model, using=self._db)
 
     return RedirectedManager()
+
+class MultiManager(models.Manager):
+    """
+    Object manager that forwards to multiple querysets and combines the results
+    """
+    def __init__(self, querysets):
+        super().__init__()
+        self.source_querysets = querysets
+
+    def filter(self, *args, **kwargs):
+        return chain_querysets(
+            qs.filter(*args, **kwargs) for qs in self.source_querysets
+        )
+
+    def get_queryset(self):
+        return chain_querysets(self.source_querysets)
+
+
+# can be made lazier
+def chain_querysets(querysets):
+    return list(chain(*querysets))

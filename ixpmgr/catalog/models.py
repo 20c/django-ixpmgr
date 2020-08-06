@@ -1,6 +1,6 @@
 from django.db import models
-import django_ixpmgr.models as ixpmgr_models
-from django_ixpmgr.model_util import *
+import django_ixpmgr.v57.models as ixpmgr_models
+from django_ixpmgr.model_util import ProxyField, ProxyManager, NullField
 
 
 class Facility(ixpmgr_models.Location):

@@ -1,5 +1,7 @@
 # serializers.py
 from rest_framework import serializers
+ModelSerializer = serializers.ModelSerializer
+# ModelSerializer = serializers.HyperlinkedModelSerializer
 
 import ixapi_schema.v2.schema as ixser
 from . import models
@@ -25,11 +27,12 @@ class PolymorphicSerializer(serializers.Serializer):
         return ret
 
 
-class AccountSerializer(ixser.Account, serializers.ModelSerializer):
+class AccountSerializer(ixser.Account, ModelSerializer):
     class Meta:
         many = True
         model = models.Account
         fields = [
+            "id",
             "name",
             "address",
             "managing_account",
@@ -40,11 +43,12 @@ class AccountSerializer(ixser.Account, serializers.ModelSerializer):
         ]
 
 
-class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
+class FacilitySerializer(ixser.Facility, ModelSerializer):
     class Meta:
         many = True
         model = models.Facility
         fields = [
+            "id",
             "name",
             "metro_area",
             "address_country",
@@ -57,9 +61,29 @@ class FacilitySerializer(ixser.Facility, serializers.ModelSerializer):
             "cluster",
         ]
 
+# IP address
+
+class IpAddressSerializer(ixser.IpAddress, ModelSerializer):
+    class Meta:
+        many = True
+        model = models.IpAddress
+        fields = (
+            "id",
+            "managing_account",
+            "consuming_account",
+            "external_ref",
+            "version",
+            "address",
+            "prefix_length",
+            "fqdn",
+            "valid_not_before",
+            "valid_not_after",
+        )
+
+
 # Member list
 
-class DenyMemberJoiningRuleSerializer(ixser.DenyMemberJoiningRule, serializers.ModelSerializer):
+class DenyMemberJoiningRuleSerializer(ixser.DenyMemberJoiningRule, ModelSerializer):
     class Meta:
         many = True
         model = models.DenyMemberJoiningRule
@@ -72,7 +96,7 @@ class DenyMemberJoiningRuleSerializer(ixser.DenyMemberJoiningRule, serializers.M
             "type",
         ]
 
-class AllowMemberJoiningRuleSerializer(ixser.AllowMemberJoiningRule, serializers.ModelSerializer):
+class AllowMemberJoiningRuleSerializer(ixser.AllowMemberJoiningRule, ModelSerializer):
     class Meta:
         many = True
         model = models.AllowMemberJoiningRule
@@ -96,7 +120,7 @@ class MemberJoiningRuleSerializer(PolymorphicSerializer):
 
 # Network services
 
-class ExchangeLanNetworkServiceSerializer(ixser.ExchangeLanNetworkService, serializers.ModelSerializer):
+class ExchangeLanNetworkServiceSerializer(ixser.ExchangeLanNetworkService, ModelSerializer):
     class Meta:
         many = True
         model = models.ExchangeLanNetworkService
@@ -117,7 +141,7 @@ class ExchangeLanNetworkServiceSerializer(ixser.ExchangeLanNetworkService, seria
             "type",
         ]
 
-class P2PNetworkServiceSerializer(ixser.P2PNetworkService, serializers.ModelSerializer):
+class P2PNetworkServiceSerializer(ixser.P2PNetworkService, ModelSerializer):
     class Meta:
         many = True
         model = models.P2PNetworkService
@@ -131,7 +155,7 @@ class P2PNetworkServiceSerializer(ixser.P2PNetworkService, serializers.ModelSeri
             "type",
         )
 
-class P2MPNetworkServiceSerializer(ixser.P2MPNetworkService, serializers.ModelSerializer):
+class P2MPNetworkServiceSerializer(ixser.P2MPNetworkService, ModelSerializer):
     class Meta:
         many = True
         model = models.P2MPNetworkService
@@ -147,7 +171,7 @@ class P2MPNetworkServiceSerializer(ixser.P2MPNetworkService, serializers.ModelSe
             "type",
         )
 
-class MP2MPNetworkServiceSerializer(ixser.MP2MPNetworkService, serializers.ModelSerializer):
+class MP2MPNetworkServiceSerializer(ixser.MP2MPNetworkService, ModelSerializer):
     class Meta:
         many = True
         model = models.MP2MPNetworkService
@@ -163,7 +187,7 @@ class MP2MPNetworkServiceSerializer(ixser.MP2MPNetworkService, serializers.Model
             "type",
         )
 
-class CloudNetworkServiceSerializer(ixser.CloudNetworkService, serializers.ModelSerializer):
+class CloudNetworkServiceSerializer(ixser.CloudNetworkService, ModelSerializer):
     class Meta:
         many = True
         model = models.CloudNetworkService
@@ -181,4 +205,32 @@ class NetworkServiceSerializer(PolymorphicSerializer):
 #        models.P2MPNetworkService: P2MPNetworkServiceSerializer,
 #        models.MP2MPNetworkService: MP2MPNetworkServiceSerializer,
 #        models.CloudNetworkService: CloudNetworkServiceSerializer,
+    }
+
+
+# Network features
+
+class RouteServerNetworkFeatureSerializer(ixser.RouteServerNetworkFeature, ModelSerializer):
+    class Meta:
+        many = True
+        model = models.RouteServerNetworkFeature
+        fields = (
+            "id",
+            "name",
+            "required",
+            "nfc_required_contact_roles",
+            "flags",
+            "network_service",
+            "asn",
+            "fqdn",
+            "looking_glass_url",
+            "address_families",
+            "session_mode",
+            "available_bgp_session_types",
+            "type",
+        )
+
+class NetworkFeatureSerializer(PolymorphicSerializer):
+    model_serializer_mapping = {
+        models.RouteServerNetworkFeature: RouteServerNetworkFeatureSerializer,
     }
