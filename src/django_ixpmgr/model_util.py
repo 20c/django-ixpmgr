@@ -191,7 +191,8 @@ def redirected_manager(to_model):
     return RedirectedManager()
 
 class MultiManager(models.Manager):
-    """Wrap querysets from unrelated models
+    """
+    Object manager that forwards to multiple querysets and combines the results
     """
     def __init__(self, querysets):
         super().__init__()
@@ -206,5 +207,6 @@ class MultiManager(models.Manager):
         return chain_querysets(self.source_querysets)
 
 
+# can be made lazier
 def chain_querysets(querysets):
     return list(chain(*querysets))

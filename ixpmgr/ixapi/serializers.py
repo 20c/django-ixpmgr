@@ -1,7 +1,7 @@
 # serializers.py
 from rest_framework import serializers
-# ModelSerializer = serializers.ModelSerializer
-ModelSerializer = serializers.HyperlinkedModelSerializer
+ModelSerializer = serializers.ModelSerializer
+# ModelSerializer = serializers.HyperlinkedModelSerializer
 
 import ixapi_schema.v2.schema as ixser
 from . import models

@@ -4,10 +4,11 @@ from typing import List
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
-from ixapi_schema.v2 import (
-    entities as schema_entities,
-    constants as schema_constants,
+from ixapi_schema.v2 import entities as schema_entities
+from ixapi_schema.v2.constants import (
+    config as config_const, ipam as ipam_const
 )
+
 from django_ixpmgr.v57 import (
     models as ixpmgr_models,
     const as ixpmgr_const,
@@ -83,13 +84,13 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
 
     @property
     def managing_account(self):
-        return self._customer.id
+        return self._customer
 
     @property
     def consuming_account(self):
         # TODO: looks like managing and consuming are the same
         # in ixp manager? come back to this
-        return self._customer.id
+        return self._customer
 
     @property
     def type(self):
@@ -118,6 +119,7 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
 
     @property
     def ip_addresses(self):
+        # todo - check vlaninterface.ipvXenabled?
         ipv4 = []
         for vlan in self.vlan_set.all():
             addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
@@ -145,9 +147,16 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
     Source = ixpmgr_models.Infrastructure
 
     # asn inherited
-    fqdn = ConstField("example.com")
+    fqdn = ConstField("example.com") # todo - which vlan iface?
     required = ConstField(False)
-    nfc_required_contact_roles = NullField()
+    all_nfc_required_contact_roles = NullField()
+
+    @property
+    def ixp_specific_flags(self):
+        flags = []
+        if self.rpki:
+            flags.append({"name": str(self.rpki), "description": "RPKI is available"})
+        return flags
 
     @property
     def network_service(self):
@@ -160,16 +169,24 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
 
     @property
     def address_families(self) -> List[str]:
-        AddressFamilies = schema_constants.ipam.AddressFamilies
+        AddressFamilies = ipam_const.AddressFamilies
         afs = {
             ixpmgr_const.Router.PROTOCOL_IPV4: AddressFamilies.AF_INET,
             ixpmgr_const.Router.PROTOCOL_IPV6: AddressFamilies.AF_INET6,
         }
         return [afs[self.protocol]]
 
-    session_mode = ConstField("public")
+    session_mode = ConstField(config_const.RouteServerSessionMode.MODE_PUBLIC)
     available_bgp_session_types = NullField()
-    ips = NullField()
+
+    @property
+    def ip_addresses(self):
+        # todo - check vlaninterface.ipvXenabled?
+        ipv4 = []
+        for vlan in self.vlan_set.all():
+            addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
+            ipv4.extend(addrs)
+        return ipv4
 
     def save(self, *a, **k):
         self.type = ixpmgr_const.Router.TYPE_ROUTE_SERVER
