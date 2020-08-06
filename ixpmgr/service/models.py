@@ -43,27 +43,21 @@ class DenyMemberJoiningRule(models.Model): pass
 
 
 class NetworkService(models.Model): pass
-    # XXX: where is this used?
-    # why not abstract?
 
-class NetworkServiceBase:
-
+class _NetworkServiceCustomer:
     @property
     def _customer(self):
-
         """
         Return the customer/account relationship for the network
         service through customertoixp
         """
-
         custixp = ixpmgr_models.CustomerToIxp.objects.filter(ixp=self.ixp).first()
         if not custixp:
             return None
         return custixp.customer
 
 
-
-class ExchangeLanNetworkService(NetworkServiceBase, ixpmgr_models.Infrastructure):
+class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCustomer):
     proxies = ProxyManager()
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure
@@ -81,7 +75,7 @@ class ExchangeLanNetworkService(NetworkServiceBase, ixpmgr_models.Infrastructure
     @property
     def network_features(self):
         qsets = (
-            RouteserverNetworkFeature.objects.filter(vlan=vlan).all()
+            RouteServerNetworkFeature.objects.filter(vlan=vlan).all()
             for vlan in self.vlan_set.all()
         )
         return list(chain(*qsets))
@@ -147,7 +141,7 @@ class NetworkFeature(models.Model):
     pass
 
 
-class RouteserverNetworkFeature(ixpmgr_models.Routers):
+class RouteServerNetworkFeature(ixpmgr_models.Routers):
     proxies = ProxyManager()
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure

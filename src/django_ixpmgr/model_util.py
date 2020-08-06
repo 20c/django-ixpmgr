@@ -143,7 +143,6 @@ def NullField():
 
 
 def redirected_manager(to_model):
-
     """
     returns a manager instance that is re-directed at a
     different table.
@@ -172,7 +171,7 @@ def redirected_manager(to_model):
 
     class RedirectedQuerySet(models.QuerySet):
         """
-        Django queryset that uses RedirectedQuery for it's
+        Django queryset that uses RedirectedQuery for its
         queries
         """
         def __init__(self, model=None, query=None, using=None, hints=None):

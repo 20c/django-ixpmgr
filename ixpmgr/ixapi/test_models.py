@@ -8,7 +8,7 @@ from ixapi.models import (
     Account, BillingInformation, RegAddress,
     Facility,
     ExchangeLanNetworkService, AllowMemberJoiningRule,
-    RouteserverNetworkFeature,
+    RouteServerNetworkFeature,
 )
 
 
@@ -76,7 +76,7 @@ def make_vlan(xlan, ip):
     return vlan
 
 def make_routeserver(handle, vlan, protocol=4, asn="69"):
-    rs = RouteserverNetworkFeature.objects.create(
+    rs = RouteServerNetworkFeature.objects.create(
         handle=handle,
         vlan=vlan, protocol=protocol, asn=asn,
     )
@@ -110,7 +110,7 @@ class ExchangeLanNetworkServiceTestCase(TestCase):
         self.assertEqual(xlan.ixp, self.ixp)
 
 
-class RouteserverNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
+class RouteServerNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
     databases = ('ixpmanager', 'default')
 
     def setUp(self):

@@ -2,13 +2,13 @@ from itertools import chain
 
 from django.shortcuts import render
 from django.apps import apps
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
 
 from . import serializers
 from . import models
 
 # View dispatching to any model mapped in the serializer class
-class PolymorphicViewSet(viewsets.ModelViewSet):
+class PolymorphicViewSet(ModelViewSet):
     def get_queryset(self):
         # assert isinstance(self.serializer_class, serializers.PolymorphicSerializer)
         model_serializers = self.serializer_class.model_serializer_mapping
@@ -18,11 +18,11 @@ class PolymorphicViewSet(viewsets.ModelViewSet):
         return list(chain(*querysets.values()))
 
 
-class AccountViewSet(viewsets.ModelViewSet):
+class AccountViewSet(ModelViewSet):
     queryset = models.Account.objects.all()
     serializer_class = serializers.AccountSerializer
 
-class FacilityViewSet(viewsets.ModelViewSet):
+class FacilityViewSet(ModelViewSet):
     queryset = models.Facility.objects.all()
     serializer_class = serializers.FacilitySerializer
 
