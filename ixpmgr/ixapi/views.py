@@ -1,9 +1,8 @@
-from itertools import chain
-
 from django.shortcuts import render
 from django.apps import apps
 from rest_framework.viewsets import ModelViewSet
 
+from django_ixpmgr.model_util import chain_querysets
 from . import serializers
 from . import models
 
@@ -11,11 +10,9 @@ from . import models
 class PolymorphicViewSet(ModelViewSet):
     def get_queryset(self):
         # assert isinstance(self.serializer_class, serializers.PolymorphicSerializer)
-        model_serializers = self.serializer_class.model_serializer_mapping
-        querysets = {
-            model: model.objects.all() for model in model_serializers
-        }
-        return list(chain(*querysets.values()))
+        return chain_querysets(
+            model.objects.all() for model in self.serializer_class.model_serializer_mapping
+        )
 
 
 class AccountViewSet(ModelViewSet):

@@ -3,6 +3,7 @@ Utilities for defining proxy fields on proxy models which forward reads and
 writes to a source field, and supporting functions.
 """
 from collections import namedtuple
+from itertools import chain
 
 from django.db import models
 from django.db.models import sql
@@ -188,3 +189,22 @@ def redirected_manager(to_model):
             return RedirectedQuerySet(self.model, using=self._db)
 
     return RedirectedManager()
+
+class MultiManager(models.Manager):
+    """Wrap querysets from unrelated models
+    """
+    def __init__(self, querysets):
+        super().__init__()
+        self.source_querysets = querysets
+
+    def filter(self, *args, **kwargs):
+        return chain_querysets(
+            qs.filter(*args, **kwargs) for qs in self.source_querysets
+        )
+
+    def get_queryset(self):
+        return chain_querysets(self.source_querysets)
+
+
+def chain_querysets(querysets):
+    return list(chain(*querysets))
