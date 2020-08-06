@@ -18,20 +18,16 @@ class _IpMixin:
         """
         Return the Vlan interface
         """
-        vlaniface = ixpmgr_models.Vlaninterface.objects.filter(vlanid=self.vlanid).first()
-        if not vlaniface:
-            return None
-        return vlaniface
+        return ixpmgr_models.Vlaninterface.objects.filter(vlanid=self.vlanid).first()
 
     @property
     def _customer(self):
         """
         Return the customer/account relationship for the network
-        service through customertoixp
+        service through the Vlan interface
         """
         iface = self._vlan_interface
-        if iface:
-            return iface.virtualinterfaceid.custid
+        if iface: return iface.virtualinterfaceid.custid
 
     @property
     def managing_account(self):

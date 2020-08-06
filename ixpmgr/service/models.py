@@ -193,11 +193,10 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
         self.api_type = ixpmgr_const.Router.API_TYPE_NONE
         self.quarantine = 0
         self.bgp_lc = 0
-        self.bgp_lc = 0
-        self.rpki = 0
         self.rfc1997_passthru = 0
         self.skip_md5 = 0
-        super().save()
+        if self.rpki is None: self.rpki = 0
+        super().save(*args, **kwargs)
 
 
 class BlackholingNetworkFeature(models.Model):
