@@ -23,8 +23,15 @@ class FacilityViewSet(ModelViewSet):
     queryset = models.Facility.objects.all()
     serializer_class = serializers.FacilitySerializer
 
+class IpAddressViewSet(ModelViewSet):
+    queryset = models.IpAddress.objects.all()
+    serializer_class = serializers.IpAddressSerializer
+
 class MemberJoiningRuleViewSet(PolymorphicViewSet):
     serializer_class = serializers.MemberJoiningRuleSerializer
 
 class NetworkServiceViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkServiceSerializer
+
+class NetworkFeatureViewSet(PolymorphicViewSet):
+    serializer_class = serializers.NetworkFeatureSerializer

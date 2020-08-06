@@ -118,13 +118,11 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
 
     @property
     def ip_addresses(self):
-        ip_addresses = []
-        for vlan in self.vlan_set.filter(private=0):
-            addrs_v4 = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
-            addrs_v6 = ipam_models.IpAddress.objects_v6.filter(vlanid=vlan.id)
-            ip_addresses.extend(addrs_v4)
-            ip_addresses.extend(addrs_v6)
-        return ip_addresses
+        ipv4 = []
+        for vlan in self.vlan_set.all():
+            addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)
+            ipv4.extend(addrs)
+        return ipv4
 
     def save(self, *args, **kwargs):
         self.isprimary = True

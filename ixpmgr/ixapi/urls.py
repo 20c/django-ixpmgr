@@ -26,6 +26,8 @@ router.register(r"facilities", views.FacilityViewSet)
 # Pass basename to the endpoints with polymorphic serializers, DRF can't infer it
 router.register(r"member-joining-rules", views.MemberJoiningRuleViewSet, basename='member-joining-rules')
 router.register(r"network-services", views.NetworkServiceViewSet, basename='network-services')
+router.register(r"network-features", views.NetworkFeatureViewSet, basename='network-features')
+router.register(r"ips", views.IpAddressViewSet, basename='ips')
 
 urlpatterns = [
     path("admin/", admin.site.urls),

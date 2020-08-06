@@ -61,6 +61,26 @@ class FacilitySerializer(ixser.Facility, ModelSerializer):
             "cluster",
         ]
 
+# IP address
+
+class IpAddressSerializer(ixser.IpAddress, ModelSerializer):
+    class Meta:
+        many = True
+        model = models.IpAddress
+        fields = (
+            "id",
+            "managing_account",
+            "consuming_account",
+            "external_ref",
+            "version",
+            "address",
+            "prefix_length",
+            "fqdn",
+            "valid_not_before",
+            "valid_not_after",
+        )
+
+
 # Member list
 
 class DenyMemberJoiningRuleSerializer(ixser.DenyMemberJoiningRule, ModelSerializer):
@@ -185,4 +205,32 @@ class NetworkServiceSerializer(PolymorphicSerializer):
 #        models.P2MPNetworkService: P2MPNetworkServiceSerializer,
 #        models.MP2MPNetworkService: MP2MPNetworkServiceSerializer,
 #        models.CloudNetworkService: CloudNetworkServiceSerializer,
+    }
+
+
+# Network features
+
+class RouteServerNetworkFeatureSerializer(ixser.RouteServerNetworkFeature, ModelSerializer):
+    class Meta:
+        many = True
+        model = models.RouteServerNetworkFeature
+        fields = (
+            "id",
+            "name",
+            "required",
+            "nfc_required_contact_roles",
+            "flags",
+            "network_service",
+            "asn",
+            "fqdn",
+            "looking_glass_url",
+            "address_families",
+            "session_mode",
+            "available_bgp_session_types",
+            "type",
+        )
+
+class NetworkFeatureSerializer(PolymorphicSerializer):
+    model_serializer_mapping = {
+        models.RouteServerNetworkFeature: RouteServerNetworkFeatureSerializer,
     }
