@@ -120,6 +120,7 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
     @property
     def ip_addresses(self):
         # todo - check vlaninterface.ipvXenabled?
+        # todo - exclude vlan.private>0 ?
         ipv4 = []
         for vlan in self.vlan_set.all():
             addrs = ipam_models.IpAddress.objects.filter(vlanid=vlan.id)

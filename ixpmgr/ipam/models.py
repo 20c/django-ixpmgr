@@ -21,6 +21,20 @@ class _IpMixin:
         return ixpmgr_models.Vlaninterface.objects.filter(vlanid=self.vlanid).first()
 
     @property
+    def _network_info(self):
+        """
+        Return network information
+        """
+
+        try:
+            netinfo = ixpmgr_models.Networkinfo.objects.get(
+                vlanid=self.vlanid, network=self.address
+            )
+            return netinfo
+        except ixpmgr_models.Networkinfo.DoesNotExist:
+            return None
+
+    @property
     def _customer(self):
         """
         Return the customer/account relationship for the network
@@ -39,6 +53,13 @@ class _IpMixin:
         # in ixp manager? come back to this
         return self._customer
 
+    @property
+    def prefix_length(self):
+        netinfo = self._network_info
+        if netinfo:
+            return netinfo.masklen
+        return None
+
 
 # Proxy pk to address, so it's visible in shallow output lists
 # todo: DRY up with mixin
@@ -52,20 +73,15 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     version = ConstField(schema_const.IpVersion.IPV4)
 
     @property
-    def prefix_length(self):
-        vlani = self._vlan_interface
-        if vlani: return vlani.maxbgpprefix
-
-    @property
     def fqdn(self):
         vlani = self._vlan_interface
         if vlani: return self._vlan_interface.ipv4hostname
 
     valid_not_before = NullField()
     valid_not_after = NullField()
-    managing_account = NullField()
-    consuming_account = NullField()
     pk = ProxyField(Source.address)
+    #TODO: why isnt this happening through pk
+    id = ProxyField(Source.address)
 
 class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     class Meta: proxy=True
@@ -75,20 +91,15 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     version = ConstField(schema_const.IpVersion.IPV6)
 
     @property
-    def prefix_length(self):
-        vlani = self._vlan_interface
-        if vlani: return vlani.maxbgpprefix
-
-    @property
     def fqdn(self):
         vlani = self._vlan_interface
-        if vlani: return self._vlan_interface.ipv4hostname
+        if vlani: return self._vlan_interface.ipv6hostname
 
     valid_not_before = NullField()
     valid_not_after = NullField()
-    managing_account = NullField()
-    consuming_account = NullField()
     pk = ProxyField(Source.address)
+    #TODO: why isnt this happening through pk
+    id = ProxyField(Source.address)
 
 class IpAddress(models.Model):
     objects = MultiManager(
