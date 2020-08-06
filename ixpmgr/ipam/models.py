@@ -70,6 +70,7 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     managing_account = NullField()
     consuming_account = NullField()
     pk = ProxyField(Source.address)
+    id = ProxyField(Source.address)
 
 class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     class Meta: proxy=True
@@ -86,13 +87,14 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     @property
     def fqdn(self):
         vlani = self._vlan_interface
-        if vlani: return self._vlan_interface.ipv4hostname
+        if vlani: return self._vlan_interface.ipv6hostname
 
     valid_not_before = NullField()
     valid_not_after = NullField()
     managing_account = NullField()
     consuming_account = NullField()
     pk = ProxyField(Source.address)
+    id = ProxyField(Source.address)
 
 class IpAddress(models.Model):
     objects = MultiManager(
