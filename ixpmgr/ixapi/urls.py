@@ -35,7 +35,7 @@ router.register(r"ips", views.IpAddressViewSet, basename='ips')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include(router.urls)),
+    path("api/v2/", include(router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 

@@ -1,6 +1,6 @@
 from django.db import models
 import django_ixpmgr.v57.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyField, ProxyManager
+from django_ixpmgr.model_util import *
 
 
 def join_address(*parts):
@@ -85,9 +85,7 @@ class Account(ixpmgr_models.Cust):
     def external_ref(self):
         pass
 
-    @property
-    def discoverable(self):
-        pass
+    discoverable = ConstField(True)
 
     def save(self, *args, **kwargs):
         # Required

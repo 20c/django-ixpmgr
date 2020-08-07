@@ -189,7 +189,7 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
             ipv4.extend(addrs)
         return ipv4
 
-    def save(self, *a, **k):
+    def save(self, *args, **kwargs):
         self.type = ixpmgr_const.Router.TYPE_ROUTE_SERVER
         self.api_type = ixpmgr_const.Router.API_TYPE_NONE
         self.quarantine = 0
