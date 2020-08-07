@@ -66,12 +66,11 @@ def make_exchangelan(acc: Account, ixp=None):
     # set account
     c2ixp = ixpmgr_models.CustomerToIxp.objects.create(customer=acc, ixp=ixp)
 
-    xlan = ExchangeLanNetworkService.proxies.create(
+    return ExchangeLanNetworkService.proxies.create(
+        name = acc.name + " exchange_lan",
         peeringdb_ixid=42,
         ixp=ixp,
     )
-
-    return xlan
 
 def make_ip(addr):
     return ixpmgr_models.Ipv4Address.objects.create(address=addr)
@@ -121,8 +120,9 @@ class ExchangeLanNetworkServiceTestCase(TestCase):
     databases = ('ixpmanager', 'default')
 
     def setUp(self):
+        acc = make_chix_account()
         self.ixp = make_ixp()
-        self.xlan = make_exchangelan(self.ixp)
+        self.xlan = make_exchangelan(acc, self.ixp)
 
     def test_get(self):
         xlan = ExchangeLanNetworkService.objects.get(pk=self.xlan.id)
@@ -140,7 +140,7 @@ class RouteServerNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
         protocol = Router.PROTOCOL_IPV4
         ip = make_ip("1.2.3.4")
         self.vlan = make_vlan(self.xlan, ip)
-        self.rs = make_router("handle1", self.vlan, protocol)
+        self.rs = make_routeserver("handle1", self.vlan, protocol)
 
     def test_get(self):
         features = self.xlan.network_features
