@@ -84,13 +84,13 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
 
     @property
     def managing_account(self):
-        return self._customer
+        return self._customer.id
 
     @property
     def consuming_account(self):
         # TODO: looks like managing and consuming are the same
         # in ixp manager? come back to this
-        return self._customer
+        return self._customer.id
 
     @property
     def type(self):
