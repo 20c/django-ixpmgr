@@ -4,6 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+# ix-api-schema = "1.2.8"
+# schemathesis = "2.3.3"
+# pytest-django
 
 [packages]
 django = "<3,>=2.2"
