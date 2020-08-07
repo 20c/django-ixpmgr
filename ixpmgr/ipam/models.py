@@ -101,6 +101,8 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     #TODO: why isnt this happening through pk
     id = ProxyField(Source.address)
 
+
+# Simulated polymorphism: a dummy model with a multimanager for "subtypes"
 class IpAddress(models.Model):
     objects = MultiManager(
         [IpAddress4.objects.all(), IpAddress6.objects.all()]

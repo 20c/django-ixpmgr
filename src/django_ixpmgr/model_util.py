@@ -190,6 +190,33 @@ def redirected_manager(to_model):
 
     return RedirectedManager()
 
+
+class MultiQuerySet(models.QuerySet):
+    """
+    Queryset that forwards to multiple querysets and combines the results
+    """
+    def __init__(self, querysets=None, model=None, query=None, using=None, hints=None):
+        if model and querysets:
+            raise ValueError("pass exactly one of model or querysets")
+        if model:
+            super().__init__(model=model, query=query, using=using, hints=hints)
+        else:
+            super().__init__()
+            self.source_querysets = querysets or ()
+
+    def filter(self, *args, **kwargs):
+        return chain_querysets(
+            qs.filter(*args, **kwargs) for qs in self.source_querysets
+        )
+
+    def all(self):
+        return chain_querysets(self.source_querysets)
+
+    def iterator(self):
+        for qs in self.source_querysets:
+            yield from qs
+
+
 class MultiManager(models.Manager):
     """
     Object manager that forwards to multiple querysets and combines the results
@@ -198,13 +225,10 @@ class MultiManager(models.Manager):
         super().__init__()
         self.source_querysets = querysets
 
-    def filter(self, *args, **kwargs):
-        return chain_querysets(
-            qs.filter(*args, **kwargs) for qs in self.source_querysets
-        )
-
     def get_queryset(self):
-        return chain_querysets(self.source_querysets)
+        ret = MultiQuerySet()
+        ret.source_querysets = self.source_querysets
+        return ret
 
 
 # can be made lazier
