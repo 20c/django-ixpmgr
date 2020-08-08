@@ -85,7 +85,7 @@ def make_vlan(xlan, ip):
     return vlan
 
 def make_routeserver(handle, vlan, protocol=4, asn="69"):
-    rs = RouteServerNetworkFeature.objects.create(
+    rs, _ = RouteServerNetworkFeature.objects.get_or_create(
         handle=handle,
         vlan=vlan,
         protocol=protocol,
@@ -140,7 +140,7 @@ class RouteServerNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
         protocol = Router.PROTOCOL_IPV4
         ip = make_ip("1.2.3.4")
         self.vlan = make_vlan(self.xlan, ip)
-        self.rs = make_routeserver("handle1", self.vlan, protocol)
+        self.rs = make_routeserver("rs1", self.vlan, protocol)
 
     def test_get(self):
         features = self.xlan.network_features
