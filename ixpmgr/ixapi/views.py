@@ -27,6 +27,10 @@ class IpAddressViewSet(ModelViewSet):
     queryset = models.IpAddress.objects.all()
     serializer_class = serializers.IpAddressSerializer
 
+class MacAddressViewSet(ModelViewSet):
+    queryset = models.MacAddress.objects.all()
+    serializer_class = serializers.MacAddressSerializer
+
 class MemberJoiningRuleViewSet(PolymorphicViewSet):
     serializer_class = serializers.MemberJoiningRuleSerializer
 

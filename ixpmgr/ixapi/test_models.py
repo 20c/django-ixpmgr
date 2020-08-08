@@ -75,6 +75,9 @@ def make_exchangelan(acc: Account, ixp=None):
 def make_ip(addr):
     return ixpmgr_models.Ipv4Address.objects.create(address=addr)
 
+def make_mac(addr):
+    return ixpmgr_models.Macaddress.objects.create(mac=addr)
+
 def make_vlan(xlan, ip):
     vlan = ixpmgr_models.Vlan.objects.create(
         infrastructureid=xlan,
@@ -95,11 +98,13 @@ def make_routeserver(handle, vlan, protocol=4, asn="69"):
 
 
 def make_all():
-    addr = "1.2.3.4"
+    ipaddr = "1.2.3.4"
+    macaddr = "765b71903bc8"
     routerhandle = "handle1"
     acc = make_chix_account()
     el = make_exchangelan(acc)
-    ip = make_ip(addr)
+    ip = make_ip(ipaddr)
+    mac = make_mac(macaddr)
     vlan = make_vlan(el, ip)
     rout = make_routeserver(routerhandle, vlan)
 

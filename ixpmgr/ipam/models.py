@@ -109,5 +109,27 @@ class IpAddress(models.Model):
     )
 
 
-class MacAddress(models.Model):
-    pass
+class MacAddress(ixpmgr_models.Macaddress):
+    class Meta: proxy = True
+    proxies = ProxyManager()
+    Source = ixpmgr_models.Macaddress
+
+    @property
+    def managing_account(self):
+        iface = self.virtualinterfaceid
+        if iface: return iface.custid.id
+
+    @property
+    def consuming_account(self):
+        # TODO: looks like managing and consuming are the same
+        # in ixp manager? come back to this
+        iface = self.virtualinterfaceid
+        if iface: return iface.custid.id
+
+    # external_ref = NullField()
+    address = ProxyField(Source.mac)
+    valid_not_before = NullField()
+    valid_not_after = NullField()
+
+    network_service_config = NullField()
+    assigned_at = ProxyField(Source.firstseen)

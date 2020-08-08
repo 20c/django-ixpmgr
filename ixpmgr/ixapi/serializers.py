@@ -80,6 +80,22 @@ class IpAddressSerializer(ixser.IpAddress, ModelSerializer):
             "valid_not_after",
         )
 
+class MacAddressSerializer(ixser.MacAddress, ModelSerializer):
+    class Meta:
+        many = True
+        model = models.MacAddress
+        fields = (
+            "id",
+            "managing_account",
+            "consuming_account",
+            "external_ref",
+            "address",
+            "valid_not_before",
+            "valid_not_after",
+            "assigned_at",
+            "network_service_config",
+        )
+
 
 # Member list
 

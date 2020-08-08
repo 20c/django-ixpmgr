@@ -32,6 +32,7 @@ router.register(r"member-joining-rules", views.MemberJoiningRuleViewSet, basenam
 router.register(r"network-services", views.NetworkServiceViewSet, basename='network-services')
 router.register(r"network-features", views.NetworkFeatureViewSet, basename='network-features')
 router.register(r"ips", views.IpAddressViewSet, basename='ips')
+router.register(r"macs", views.MacAddressViewSet, basename='macs')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
