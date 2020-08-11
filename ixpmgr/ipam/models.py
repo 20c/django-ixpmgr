@@ -109,21 +109,21 @@ class IpAddress(models.Model):
     )
 
 
-class MacAddress(ixpmgr_models.Macaddress):
+class MacAddress(ixpmgr_models.L2Address):
     class Meta: proxy = True
     proxies = ProxyManager()
-    Source = ixpmgr_models.Macaddress
+    Source = ixpmgr_models.L2Address
 
     @property
     def managing_account(self):
-        iface = self.virtualinterfaceid
+        iface = self.vlan_interface.virtualinterfaceid
         if iface: return iface.custid.id
 
     @property
     def consuming_account(self):
         # TODO: looks like managing and consuming are the same
         # in ixp manager? come back to this
-        iface = self.virtualinterfaceid
+        iface = self.vlan_interface.virtualinterfaceid
         if iface: return iface.custid.id
 
     # external_ref = NullField()
@@ -132,4 +132,4 @@ class MacAddress(ixpmgr_models.Macaddress):
     valid_not_after = NullField()
 
     network_service_config = NullField()
-    assigned_at = ProxyField(Source.firstseen)
+    assigned_at = ProxyField(Source.created)
