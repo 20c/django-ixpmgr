@@ -127,9 +127,17 @@ class MacAddress(ixpmgr_models.L2Address):
         if iface: return iface.custid.id
 
     # external_ref = NullField()
-    address = ProxyField(Source.mac)
     valid_not_before = NullField()
     valid_not_after = NullField()
 
     network_service_config = NullField()
     assigned_at = ProxyField(Source.created)
+
+    @property
+    def address(self):
+        """
+        ixapi spec wants colon delimited mac addresses
+        ixp manager stores without
+        solution taken from: https://stackoverflow.com/a/11006780
+        """
+        return ':'.join(self.mac[i:i+2] for i in range(0,12,2))
