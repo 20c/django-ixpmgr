@@ -1,4 +1,10 @@
 from django.db import models
+import django_ixpmgr.v57.models as ixpmgr_models
+from django_ixpmgr.model_util import *
+
+class NetworkServiceConfig(models.Model):
+    type = NullField()
+    network_service = NullField()
 
 
 class DemarcationPoint(models.Model):
@@ -40,9 +46,6 @@ class P2MPNetworkServiceConfig(models.Model):
 class CloudNetworkServiceConfig(models.Model):
     pass
 
-
-class NetworkServiceConfig(models.Model):
-    pass
 
 
 class BlackholingNetworkFeatureConfig(models.Model):

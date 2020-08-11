@@ -250,3 +250,36 @@ class NetworkFeatureSerializer(PolymorphicSerializer):
     model_serializer_mapping = {
         models.RouteServerNetworkFeature: RouteServerNetworkFeatureSerializer,
     }
+
+
+# Network service config
+
+class NetworkServiceConfigSerializer(ixser.NetworkServiceConfig, serializers.ModelSerializer):
+
+    class Meta:
+        many = True
+        model = models.NetworkServiceConfig
+        fields = (
+            "type",
+#            "state",
+#            "status",
+#            "id",
+            "network_service",
+#            "managing_account",
+#            "consuming_account",
+#            "external_ref",
+#            "purchase_order",
+#            "contract_ref",
+#            "billing_account",
+#            "role_assignments",
+#            "connection",
+#            "network_feature_configs",
+#            "vlan_config",
+#            "capacity",
+#            "asns",
+#            "macs",
+#            "ips",
+#            "listed",
+        )
+
+
