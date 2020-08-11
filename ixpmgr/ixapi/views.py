@@ -3,8 +3,8 @@ from django.apps import apps
 from rest_framework.viewsets import ModelViewSet
 
 from django_ixpmgr.model_util import chain_querysets
-from . import serializers
-from . import models
+from . import serializers, models
+
 
 # View dispatching to any model mapped in the serializer class
 class PolymorphicViewSet(ModelViewSet):
