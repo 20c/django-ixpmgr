@@ -9,6 +9,8 @@ from schemathesis.models import Case
 # schemathesis generates request data as "hypothesis" examples, and validates
 # responses against a server (either running separately, or directly using wsgi app)
 
+USE_WSGI = False
+
 # Combines decorators to use specific example data
 def example_for(path):
     def _dec(func):
@@ -22,7 +24,19 @@ def example_for(path):
         )
     return _dec
 
-# Always check for an id=1 object
+def _create_test(endpoint):
+    @schema.parametrize(method="GET", endpoint=f"/{endpoint}")
+    # @example_for(f"/{endpoint}" + "/{id}")
+    def test_endpoint(case):
+        if USE_WSGI:
+            response = case.call_wsgi()
+        else:
+            response = case.call()
+        case.validate_response(response)
+        assert response.status_code < 500
+    return test_endpoint
+
+# Always checks for an id=1 object
 @schemathesis.hooks.register
 def before_add_examples(context, examples):
     examples.append(
@@ -35,7 +49,6 @@ hypothesis.settings.load_profile("main")
 
 SOCKET_ADDR = "localhost:5000"
 SCHEMA_PATH = "/static/schema/v2.json"
-USE_WSGI = False
 
 if USE_WSGI:
     # Use wsgi app - faster but has encoding issue? (fixme)
@@ -44,15 +57,6 @@ if USE_WSGI:
 else:
     # Use a running app - todo: how to use test data
     schema = schemathesis.from_uri(f"http://{SOCKET_ADDR}{SCHEMA_PATH}")
-
-def _create_test(endpoint):
-    @schema.parametrize(method="GET", endpoint=f"/{endpoint}")
-    # @example_for(f"/{endpoint}" + "/{id}")
-    def test_endpoint(case):
-        response = case.call()
-        case.validate_response(response)
-        assert response.status_code < 500
-    return test_endpoint
 
 test_accounts = _create_test('accounts')
 test_facilities = _create_test('facilities')
