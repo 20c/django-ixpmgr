@@ -56,3 +56,9 @@ def _create_test(endpoint):
 
 test_accounts = _create_test('accounts')
 test_facilities = _create_test('facilities')
+
+test_member_joining_rules = _create_test("member-joining-rules")
+test_network_services = _create_test("network-services")
+test_network_features = _create_test("network-features")
+test_ips = _create_test("ips")
+test_macs = _create_test("macs")
