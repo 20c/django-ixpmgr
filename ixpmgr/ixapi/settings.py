@@ -19,11 +19,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "!d1!la!kl2mntd5gbhs+2nqul1e(@4oy2kfu4y8p-cdpf2(bko"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -90,6 +88,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "ixapi.wsgi.application"
 
+# complicates testing; desired? - todo
+APPEND_SLASH = False
 
 ERROR_DOCS_BASE_URL = "https://errors.ix-api.net/v2/" # todo
 
@@ -145,8 +145,8 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 # where collectstatic will collect static files for deployment
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = "/var/www/ixpmgr"
 
 STATICFILES_DIRS = [
-    os.path.join(STATIC_ROOT, "static"),
+    os.path.join(BASE_DIR, "static"),
 ]
