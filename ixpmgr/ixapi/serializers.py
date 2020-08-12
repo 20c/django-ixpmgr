@@ -24,6 +24,7 @@ class PolymorphicSerializer(serializers.Serializer):
         seri = self.model_serializer_mapping[instance.__class__]
         ret = seri.to_representation(instance)
         # todo: set "type" to serializer.__polymorphic_type__?
+        ret["type"] = seri.__polymorphic_type__
         return ret
 
 
