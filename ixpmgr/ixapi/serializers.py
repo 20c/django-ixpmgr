@@ -24,7 +24,7 @@ class PolymorphicSerializer(serializers.Serializer):
         seri = self.model_serializer_mapping[instance.__class__]
         ret = seri.to_representation(instance)
         # todo: set "type" to serializer.__polymorphic_type__?
-        ret["type"] = serializer.__polymorphic_type__
+        ret["type"] = seri.__polymorphic_type__
         return ret
 
 
@@ -255,11 +255,11 @@ class NetworkFeatureSerializer(PolymorphicSerializer):
 
 # Network service config
 
-class NetworkServiceConfigSerializer(ixser.NetworkServiceConfig, serializers.ModelSerializer):
+class ExchangeLanNetworkServiceConfigSerializer(ixser.ExchangeLanNetworkServiceConfig, serializers.ModelSerializer):
 
     class Meta:
         many = True
-        model = models.NetworkServiceConfig
+        model = models.ExchangeLanNetworkServiceConfig
         fields = (
             "type",
 #            "state",
@@ -282,5 +282,15 @@ class NetworkServiceConfigSerializer(ixser.NetworkServiceConfig, serializers.Mod
 #            "ips",
 #            "listed",
         )
+
+
+class NetworkServiceConfigSerializer(PolymorphicSerializer):
+    model_serializer_mapping = {
+        models.ExchangeLanNetworkServiceConfig: ExchangeLanNetworkServiceConfigSerializer,
+#        models.P2PNetworkServiceConfig: P2PNetworkServiceConfigSerializer,
+#        models.P2MPNetworkServiceConfig: P2MPNetworkServiceConfigSerializer,
+#        models.MP2MPNetworkServiceConfig: MP2MPNetworkServiceConfigSerializer,
+#        models.CloudNetworkServiceConfig: CloudNetworkServiceConfigSerializer,
+    }
 
 

@@ -40,8 +40,7 @@ class NetworkServiceViewSet(PolymorphicViewSet):
 class NetworkFeatureViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkFeatureSerializer
 
-class NetworkServiceConfigViewSet(ModelViewSet):
-    queryset = models.NetworkServiceConfig.objects.all()
+class NetworkServiceConfigViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkServiceConfigSerializer
 
 
