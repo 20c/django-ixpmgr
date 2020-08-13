@@ -141,3 +141,7 @@ class MacAddress(ixpmgr_models.L2Address):
         solution taken from: https://stackoverflow.com/a/11006780
         """
         return ':'.join(self.mac[i:i+2] for i in range(0,12,2))
+
+    @property
+    def pk(self):
+        return self.address
