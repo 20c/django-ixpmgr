@@ -8,10 +8,16 @@ from . import serializers, models
 
 # View dispatching to any model mapped in the serializer class
 class PolymorphicViewSet(ModelViewSet):
+
+    # class property that allows to set filters
+    # for the get_queryset operation, leaving it
+    # empty is identical to all()
+    queryset_filters = {}
+
     def get_queryset(self):
         # assert isinstance(self.serializer_class, serializers.PolymorphicSerializer)
         return chain_querysets(
-            model.objects.all() for model in self.serializer_class.model_serializer_mapping
+            model.objects.filter(**self.queryset_filters) for model in self.serializer_class.model_serializer_mapping
         )
 
 
@@ -41,6 +47,14 @@ class NetworkFeatureViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkFeatureSerializer
 
 class NetworkServiceConfigViewSet(PolymorphicViewSet):
+
+    # exclude private vlans from this, this may or may not
+    # be correct, but seems like the more sensible choice for now
+    # TODO: discuss/verify
+
+    queryset_filters = {
+        "vlanid__private": 0
+    }
     serializer_class = serializers.NetworkServiceConfigSerializer
 
 
