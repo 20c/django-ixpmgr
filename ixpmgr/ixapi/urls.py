@@ -35,6 +35,7 @@ router.register(r"network-service-configs", views.NetworkServiceConfigViewSet, b
 router.register(r"network-features", views.NetworkFeatureViewSet, basename='network-features')
 router.register(r"ips", views.IpAddressViewSet, basename='ips')
 router.register(r"macs", views.MacAddressViewSet, basename='macs')
+router.register(r"connections", views.ConnectionViewSet, basename='connections')
 
 urlpatterns = [
     path("admin/", admin.site.urls),

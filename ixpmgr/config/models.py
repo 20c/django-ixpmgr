@@ -5,6 +5,7 @@ from django_ixpmgr.model_util import *
 
 import service.models as service_models
 import ipam.models as ipam_models
+import catalog.models as catalog_models
 
 class Connection(ixpmgr_models.Virtualinterface):
 
@@ -23,24 +24,109 @@ class Connection(ixpmgr_models.Virtualinterface):
         proxy = True
 
 
-    """
+    # missing mappings
+
+    status = ConstField([])
+    role_assignments = ConstField([])
+
+    # unsure how to map this, first instinct
+    # was to check status on physical interface, but
+    # many physical interfaces can be related to
+    # a virtualinterface (and even the ixapi spec
+    # states many connections)
+
     state = NullField()
-    status = NullField()
-    managing_account = NullField()
-    consuming_account = NullField()
-    billing_account = NullField()
     purchase_order = NullField()
-    external_ref = NullField()
     contract_ref = NullField()
-    role_assignments = NullField()
-    mode = NullField()
-    lacp_timeout = NullField()
-    speed = NullField()
-    name = NullField()
-    ports = NullField()
     vlan_types = NullField()
     outer_vlan_ethertypes = NullField()
-    """
+    lacp_timeout = NullField()
+
+    # direct mappings
+
+
+    # indirect mappings
+
+    @property
+    def _physical(self):
+        return ixpmgr_models.Physicalinterface.objects.filter(
+            virtualinterfaceid__id=self.id
+        )
+
+    @property
+    def managing_account(self):
+        # should this be the ix instead?
+        return self.custid.id
+
+    @property
+    def consuming_account(self):
+        return self.custid.id
+
+    @property
+    def billing_account(self):
+        return self.custid.id
+
+    @property
+    def external_ref(self):
+        return f"virtualinterface:{self.id}"
+
+    @property
+    def speed(self):
+        speed = 0
+        for phys in self._physical:
+            speed += phys.speed
+        return speed
+
+    @property
+    def mode(self):
+        """
+        ixapi spec
+
+        - `lag_lacp`: connection is build as a LAG with LACP enabled
+        - `lag_static`: connection is build as LAG with static configuration
+        - `flex_ethernet`: connect is build as a FlexEthernet channel
+        - `standalone`: only one port is allowed in this connection without
+        """
+        Mode= schema_entities.config.ConnectionMode
+        if self.channelgroup:
+            if self.fastlacp:
+                return Mode.MODE_LACP
+            else:
+                return Mode.MODE_STATIC
+
+        # TODO: flex_ethernet?
+
+        return Mode.MODE_STANDALONE
+
+    @property
+    def ports(self):
+        return [f"{p.pk}" for p in Port.objects.filter(
+            physicalinterface__virtualinterfaceid=self
+        )]
+
+
+class Port(ixpmgr_models.Switchport):
+    class Meta:
+        proxy = True
+
+    proxies = ProxyManager()
+    Source = ixpmgr_models.Switchport
+
+    # unmapped
+
+    media_type = NullField()
+    device = NullField()
+    pop = NullField()
+
+    # direct mapped
+
+    # indirect mapped
+
+    @property
+    def device(self):
+        return catalog_models(Device.objects.get(id=self.switchid.id))
+
+
 
 class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
 

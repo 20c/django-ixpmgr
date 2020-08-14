@@ -37,6 +37,10 @@ class MacAddressViewSet(ModelViewSet):
     queryset = models.MacAddress.objects.all()
     serializer_class = serializers.MacAddressSerializer
 
+class ConnectionViewSet(ModelViewSet):
+    queryset = models.Connection.objects.all()
+    serializer_class = serializers.ConnectionSerializer
+
 class MemberJoiningRuleViewSet(PolymorphicViewSet):
     serializer_class = serializers.MemberJoiningRuleSerializer
 
@@ -47,5 +51,7 @@ class NetworkFeatureViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkFeatureSerializer
 
 class NetworkServiceConfigViewSet(PolymorphicViewSet):
-    #TODO: should this contain private vlans?
+    #TODO: this contain private vlans?
     serializer_class = serializers.NetworkServiceConfigSerializer
+
+

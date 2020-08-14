@@ -39,8 +39,27 @@ class Facility(ixpmgr_models.Location):
             return None
 
 
-class Device(models.Model):
-    pass
+class Device(ixpmgr_models.Switch):
+    class Meta:
+        proxy = True
+    proxies = ProxyManager()
+    Source = ixpmgr_models.Switch
+
+    # unmapped
+
+    pop = NullField()
+    capabilities = NullField()
+
+    # mapped as is
+    # - name
+
+    # direct mapped
+
+    # indirect mapped
+
+    @property
+    def facility(self):
+        return Facility.objects.get(id=self.infrastructure.id)
 
 
 class ProductOffering(models.Model):

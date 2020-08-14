@@ -252,6 +252,31 @@ class NetworkFeatureSerializer(PolymorphicSerializer):
         models.RouteServerNetworkFeature: RouteServerNetworkFeatureSerializer,
     }
 
+# Connection
+
+class ConnectionSerializer(ixser.Connection, serializers.ModelSerializer):
+    class Meta:
+        many = True
+        model = models.Connection
+        fields = (
+            "state",
+            "status",
+            "managing_account",
+            "consuming_account",
+            "billing_account",
+            "purchase_order",
+            "external_ref",
+            "contract_ref",
+            "role_assignments",
+            "mode",
+            "lacp_timeout",
+            "speed",
+            "name",
+            "ports",
+            "vlan_types",
+            "outer_vlan_ethertypes",
+        )
+
 
 # Network service config
 
