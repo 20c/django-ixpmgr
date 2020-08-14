@@ -28,14 +28,6 @@ class Connection(ixpmgr_models.Virtualinterface):
 
     status = ConstField([])
     role_assignments = ConstField([])
-
-    # unsure how to map this, first instinct
-    # was to check status on physical interface, but
-    # many physical interfaces can be related to
-    # a virtualinterface (and even the ixapi spec
-    # states many connections)
-
-    state = NullField()
     purchase_order = NullField()
     contract_ref = NullField()
     vlan_types = NullField()
@@ -49,9 +41,23 @@ class Connection(ixpmgr_models.Virtualinterface):
 
     @property
     def _physical(self):
+
+        """
+        helper function to retrieve a query of all physical interfaces
+        related to this connection
+        """
+
         return ixpmgr_models.Physicalinterface.objects.filter(
             virtualinterfaceid__id=self.id
         )
+
+    @property
+    def state(self):
+        # TODO unsure how to implemented this, instinct
+        # was to check status of physicalinterface
+        # (conencted vs not connected), but there can
+        # be many physical devices.
+        return None
 
     @property
     def managing_account(self):
@@ -106,6 +112,16 @@ class Connection(ixpmgr_models.Virtualinterface):
 
 
 class Port(ixpmgr_models.Switchport):
+
+    """
+    A Port is the point at which subscriber and IXP networks meet.
+
+    A port is always associated with a device and pop, has a speed and a media_type.
+
+    Currently implemented in it's most basic form so we can reference it
+    in `Connection`
+    """
+
     class Meta:
         proxy = True
 

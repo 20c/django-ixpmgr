@@ -40,6 +40,16 @@ class Facility(ixpmgr_models.Location):
 
 
 class Device(ixpmgr_models.Switch):
+
+    """
+    A Device is a network hardware device, typically a switch, which is located at a specified facility and inside a PointOfPresence. PoPs.
+
+    They may be physically located at their related PoPs.
+
+    Currently implemented in it's most basic form so we can reference it
+    in `Port`
+    """
+
     class Meta:
         proxy = True
     proxies = ProxyManager()
