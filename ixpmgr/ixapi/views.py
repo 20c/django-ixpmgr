@@ -47,14 +47,5 @@ class NetworkFeatureViewSet(PolymorphicViewSet):
     serializer_class = serializers.NetworkFeatureSerializer
 
 class NetworkServiceConfigViewSet(PolymorphicViewSet):
-
-    # exclude private vlans from this, this may or may not
-    # be correct, but seems like the more sensible choice for now
-    # TODO: discuss/verify
-
-    queryset_filters = {
-        "vlanid__private": 0
-    }
+    #TODO: should this contain private vlans?
     serializer_class = serializers.NetworkServiceConfigSerializer
-
-
