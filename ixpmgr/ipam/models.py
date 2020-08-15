@@ -7,18 +7,21 @@ from django_ixpmgr.model_util import *
 
 
 class _IpMixin:
-    # fqdn = NullField()
-    # valid_not_before = NullField()
-    # valid_not_after = NullField()
-    # managing_account = NullField()
-    # consuming_account = NullField()
-
+    # TODO: which interface?
     @property
     def _vlan_interface(self):
         """
         Return the Vlan interface
         """
         return ixpmgr_models.Vlaninterface.objects.filter(vlanid=self.vlanid).first()
+
+    @_vlan_interface.setter
+    def _vlan_interface(self, vlani: ixpmgr_models.Vlaninterface):
+        """
+        Set the Vlan interface
+        """
+        self.vlanid = vlani.vlanid
+
 
     @property
     def _network_info(self):
@@ -43,15 +46,30 @@ class _IpMixin:
         iface = self._vlan_interface
         if iface: return iface.virtualinterfaceid.custid
 
-    @property
-    def managing_account(self):
-        return self._customer.id
+    @_customer.setter
+    def _customer(self, custid):
+        """
+        Return the customer/account relationship for the network
+        service through the Vlan interface
+        """
+        virti = ixpmgr_models.Virtualinterface.objects.filter(custid=custid).first()
+        if not virti:
+            raise ValueError("No virtual interface for customer", custid)
+        vlani = ixpmgr_models.Vlaninterface.objects.filter(virtualinterfaceid=virti.id).first()
+        if not vlani:
+            raise ValueError("No VLAN interface for virtual interface", virti.id)
+        self._vlan_interface = vlani
 
-    @property
-    def consuming_account(self):
-        # TODO: looks like managing and consuming are the same
-        # in ixp manager? come back to this
-        return self._customer.id
+
+    # @proxies.property
+    # def managing_account(self):
+    #     return self._customer.id
+
+    # @property
+    # def consuming_account(self):
+    #     # TODO: looks like managing and consuming are the same
+    #     # in ixp manager? come back to this
+    #     return self._customer.id
 
     @property
     def prefix_length(self):
@@ -69,37 +87,57 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     class Meta: proxy=True
     Source = ixpmgr_models.Ipv4Address
     proxies = ProxyManager()
+    # proxies = ProxyManager(inherited=["address", ...])
 
-    version = ConstField(schema_const.IpVersion.IPV4)
+    version = proxies.const_field(schema_const.IpVersion.IPV4)
 
     @property
     def fqdn(self):
         vlani = self._vlan_interface
         if vlani: return self._vlan_interface.ipv4hostname
 
-    valid_not_before = NullField()
-    valid_not_after = NullField()
+    valid_not_before = proxies.null_field()()
+    valid_not_after = proxies.null_field()()
     pk = ProxyField(Source.address)
     #TODO: why isnt this happening through pk
-    id = ProxyField(Source.address)
+    # id = ProxyField(Source.address)
+
+    @proxies.property(Source.vlanid)
+    def managing_account(self):
+        return self._customer.id
+
+    @managing_account.setter
+    def managing_account(self, custid):
+        self._customer = custid
+
+    consuming_account = managing_account
 
 class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     class Meta: proxy=True
     proxies = ProxyManager()
     Source = ixpmgr_models.Ipv6Address
+    version = proxies.const_field(schema_const.IpVersion.IPV6)
 
-    version = ConstField(schema_const.IpVersion.IPV6)
 
     @property
     def fqdn(self):
         vlani = self._vlan_interface
         if vlani: return self._vlan_interface.ipv6hostname
 
-    valid_not_before = NullField()
-    valid_not_after = NullField()
+    valid_not_before = proxies.null_field()()
+    valid_not_after = proxies.null_field()()
     pk = ProxyField(Source.address)
     #TODO: why isnt this happening through pk
-    id = ProxyField(Source.address)
+    # id = ProxyField(Source.address)
+
+    @proxies.property(Source.vlanid)
+    def managing_account(self):
+        return self._customer.id
+    @managing_account.setter
+    def managing_account(self, custid):
+        self._customer = custid
+
+    consuming_account = managing_account
 
 
 # Simulated polymorphism: a dummy model with a multimanager for "subtypes"
@@ -114,22 +152,43 @@ class MacAddress(ixpmgr_models.Macaddress):
     proxies = ProxyManager()
     Source = ixpmgr_models.Macaddress
 
-    @property
+    @proxies.property(Source.vlan_interface)
     def managing_account(self):
-        iface = self.virtualinterfaceid
-        if iface: return iface.custid.id
+        virt = self.vlan_interface.virtualinterfaceid
+        if virt: return virt.custid.id
 
-    @property
-    def consuming_account(self):
-        # TODO: looks like managing and consuming are the same
-        # in ixp manager? come back to this
-        iface = self.virtualinterfaceid
-        if iface: return iface.custid.id
+    @managing_account.setter
+    def managing_account(self, custid):
+        # TODO: how to choose interfaces
+        virti = ixpmgr_models.Virtualinterface.objects.filter(custid=custid).first()
+        if not virti:
+            raise ValueError("No virtual interface for customer", custid)
+        vlani = ixpmgr_models.Vlaninterface.objects.filter(virtualinterfaceid=virti.id).first()
+        if not vlani:
+            raise ValueError("No VLAN interface for virtual interface", virti.id)
+        self.vlan_interface = vlani
 
-    # external_ref = NullField()
-    address = ProxyField(Source.mac)
-    valid_not_before = NullField()
-    valid_not_after = NullField()
+    consuming_account = managing_account
 
-    network_service_config = NullField()
-    assigned_at = ProxyField(Source.firstseen)
+    external_ref = proxies.null_field()()
+    valid_not_before = proxies.null_field()()
+    valid_not_after = proxies.null_field()()
+
+    network_service_config = proxies.null_field()()
+    assigned_at = ProxyField(Source.created)
+
+    @proxies.property(Source.mac)
+    def address(self):
+        """
+        ixapi spec wants colon delimited mac addresses
+        ixp manager stores without
+        solution taken from: https://stackoverflow.com/a/11006780
+        """
+        return ':'.join(self.mac[i:i+2] for i in range(0,12,2))
+
+    @address.setter
+    def address(self, value: str):
+        # breakpoint()
+        if value.find(':') != -1:
+            value = ''.join(value.split(':'))
+        self.mac = value

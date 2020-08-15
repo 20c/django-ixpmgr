@@ -2,8 +2,10 @@
 Utilities for defining proxy fields on proxy models which forward reads and
 writes to a source field, and supporting functions.
 """
+from typing import Union
 from collections import namedtuple
 from itertools import chain
+from functools import wraps
 
 from django.db import models
 from django.db.models import sql
@@ -11,20 +13,46 @@ from django.db.models.query_utils import DeferredAttribute
 from django.db.models.fields.related_descriptors import ForwardOneToOneDescriptor
 
 
+# # convenient field stubbing
+# def ConstField(value):
+#     return property(lambda self: value)
+# def NullField():
+#     return ConstField(None)
+
+class _ConstFieldDescriptor:
+    def __init__(self, value):
+        self.value = value
+
+    def contribute_to_class(self, model, name, **_):
+        model.proxies.add_proxy_field(name, None)
+
+    def __get__(self, instance, instance_type=None):
+        if instance is None: return self
+        return None
+
+    def __set__(self, instance, value):
+        # print("warning: setting null field")
+        pass
+
+
 class ProxyManager(models.Manager):
     """Custom manager with factory method using named args corresponding to IX-API"""
 
     def __init__(self):
         super().__init__()
-        self.proxy_fields = set()
+        # self.proxy_fields = set()
+        self.proxy_fields = {}
 
-    def add_proxy_field(self, name):
-        "Register a field name as a proxy field. Regenerates the create() class method"
-        self.proxy_fields.add(name)
+    def add_proxy_field(self, name, source_name):
+        """Register a field name as a proxy field. Regenerates the create() class method
+        """
+        # self.proxy_fields.add(name)
+        self.proxy_fields[name] = source_name
         self.create = self.get_factory()
 
     def get_factory(self):
-        """Generate a factory function with named args corresponding to IX-API.
+        """Generate a factory function with named args and docstring corresponding to
+        registered proxy fields.
 
         >>> class MyMod(ProxyBase, BaseMod):
         >>>   class Meta: proxy = True
@@ -33,7 +61,7 @@ class ProxyManager(models.Manager):
         >>> create(name="Foo")
         <MyMod: MyMod object (1)>
         """
-        args = self.proxy_fields
+        args = self.writable_fields()
         arg_spec = ", ".join(f"{name}=None" for name in args)
         arg_list = ", ".join(f"{name}={name}" for name in args)
         doc_str = (
@@ -48,11 +76,34 @@ class ProxyManager(models.Manager):
         exec("\n".join(exec_lines), namespace)
         return namespace["create"]
 
-    def _create(self, **k):
+    def property(self, source):
+        "Define a property and register a method as a proxy field"
+        def decorator(func):
+            self.add_proxy_field(func.__name__, get_field_name(source))
+            return property(func)
+        return decorator
+
+    # FIXME: dev only
+    def const_field(self, value):
+        return _ConstFieldDescriptor(value)
+    def null_field(self):
+        return _ConstFieldDescriptor(None)
+
+    def writable_fields(self):
+        fields = self.proxy_fields.copy()
+        fields.pop("pk", None)        # todo
+        return fields
+
+    def _create(self, **kwargs):
         # Intercept the proxy fields bc Django will choke on them
-        values = {key: k.pop(key) for key in self.proxy_fields if key in k}
-        obj = super().create(**k)
+        values = {
+            key: kwargs.pop(key)
+            for key in self.writable_fields() if key in kwargs
+        }
+        # obj = super().create(**kwargs)
+        obj = self.model(**kwargs)
         for key, value in values.items():
+            # breakpoint()
             setattr(obj, key, value)
         obj.save()
         return obj
@@ -69,17 +120,21 @@ class _ProxyFieldMixin:
     """
     Mixin class for defining a proxy field.
     """
+    def _init(self, field_name, relation, proxy_model): # todo: cleaner mixin ctor?
+        self.field_name = field_name
+        self.relation = relation
+        self.proxy_model = proxy_model
+
     def contribute_to_class(self, model, name, **_):
         """Add this field to a model.
         Model must define a `.proxies` ProxyManager class attribute
         """
-        sup = super()
-        contrib = getattr(sup, "contribute_to_class", None)
+        contrib = getattr(super(), "contribute_to_class", None)
         if contrib:
             contrib(model, name)
         setattr(model, name, self)
         mgr = self.get_manager(model)
-        mgr.add_proxy_field(name)
+        mgr.add_proxy_field(name, self.field_name)
         # if mgr: mgr.add_proxy_field(name)
 
     def get_instance(self, instance):
@@ -90,6 +145,8 @@ class _ProxyFieldMixin:
     def get_manager(self, model):
         return model.proxies
 
+
+class _DirectFieldDescriptor(_ProxyFieldMixin):
     def __set__(self, instance, value):
         """Set the source field to a value. If field is a relation to another
         proxied model, the value is wrapped with the proxy model before being set.
@@ -114,33 +171,31 @@ class _ProxyFieldMixin:
             return model.objects.get(pk=value.id)
         return value
 
+def get_field_name(source):
+    "Determine source field name"
+    if isinstance(source, DeferredAttribute):
+        return source.field_name  # django2 inconsistency
+    elif isinstance(source, ForwardOneToOneDescriptor):
+        return source.field.name
 
 def ProxyField(source, *args, relation=None, proxy_model=None, **kwargs):
     """Returns an instance of a new subclass of the source field.
     Pass a field as `relation`, to obtain the source instance via the field attribute.
     Pass a model as `proxy_model` to treat the field as a relation to another proxied model.
     """
-    field_name = None
-    if isinstance(source, DeferredAttribute):
-        field_name = source.field_name  # django2 inconsistency
-    elif isinstance(source, ForwardOneToOneDescriptor):
-        field_name = source.field.name
+    field_name = get_field_name(source)
     ParentField = source.__class__
-    CustomProxyField = type("CustomProxyField", (_ProxyFieldMixin, ParentField), {})
+    CustomProxyField = type("CustomProxyField", (_DirectFieldDescriptor, ParentField), {})
 
     proxy = CustomProxyField(field_name, *args, **kwargs)
     proxy.source_field_name = field_name
     proxy.source_relation = relation
     proxy.proxy_model = proxy_model
     # .descriptor_class # django3
+    # super(proxy, _DirectFieldDescriptor).__init__(field_name, relation, proxy_model)
+    # _DirectFieldDescriptor._init(proxy, field_name, relation, proxy_model)
+    proxy._init(field_name, relation, proxy_model)
     return proxy
-
-
-# convenient field stubbing
-def ConstField(value):
-    return property(lambda self: value)
-def NullField():
-    return ConstField(None)
 
 
 def redirected_manager(to_model):

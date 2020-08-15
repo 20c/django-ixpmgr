@@ -9,28 +9,13 @@ from ixapi.models import (
     Facility,
     ExchangeLanNetworkService, AllowMemberJoiningRule,
     RouteServerNetworkFeature,
+    IpAddress, IpAddress4, IpAddress6,
+    MacAddress,
 )
 
-# give account a location
-def make_custkit(locname):
-    location = ixpmgr_models.Location.objects.get_or_create(
-        shortname=locname,
-        name="ChIX main",
-        tag="chix",
-        address="420 Michigan Ave",
-        city="Chicago",
-        country="US",
-    )
-    cabinet = ixpmgr_models.Cabinet.objects.get_or_create(
-        locationid=location,
-        name="chix main cabinet",
-        cololocation="chix main coloc",
-        height=42,
-    )
-    ixpmgr_models.Custkit.objects.create(
-        custid=account, cabinetid=cabinet, name="chix kit",
-    )
 
+# Convenience functions for building up test data
+# Preferring to use the proxy models & names where possible, ie. account not cust
 
 def make_chix_account():
     account = Account.proxies.create(
@@ -56,6 +41,31 @@ def make_chix_account():
     location_shortname = "chix1"
     return account
 
+# give account a location
+def make_custkit(locname):
+    location = ixpmgr_models.Location.objects.get_or_create(
+        shortname=locname,
+        name="ChIX main",
+        tag="chix",
+        address="420 Michigan Ave",
+        city="Chicago",
+        country="US",
+    )
+    cabinet = ixpmgr_models.Cabinet.objects.get_or_create(
+        locationid=location,
+        name="chix main cabinet",
+        cololocation="chix main coloc",
+        height=42,
+    )
+    ixpmgr_models.Custkit.objects.create(
+        custid=account, cabinetid=cabinet, name="chix kit",
+    )
+
+def make_virtual_interface(acct):
+    return ixpmgr_models.Virtualinterface.objects.create(
+        custid=acct, lag_framing=False, fastlacp=False,
+    )
+
 def make_ixp():
     return ixpmgr_models.Ixp.objects.create()
 
@@ -72,20 +82,31 @@ def make_exchangelan(acc: Account, ixp=None):
         ixp=ixp,
     )
 
-def make_ip(addr):
-    return ixpmgr_models.Ipv4Address.objects.create(address=addr)
+def make_ip4(addr, acct):
+    ip = IpAddress4.proxies.create(address=addr, managing_account=acct)
+    return ip
 
-def make_mac(addr):
-    return ixpmgr_models.Macaddress.objects.create(mac=addr)
+def make_mac(addr, acct):
+    # breakpoint()
+    mac = MacAddress.proxies.create(
+        managing_account=acct,
+        address=addr)
+    return mac
 
-def make_vlan(xlan, ip):
+def make_vlan(xlan):
     vlan = ixpmgr_models.Vlan.objects.create(
         infrastructureid=xlan,
         private=False,
         peering_matrix=0,
         peering_manager=0)
-    vlan.ipv4address_set.add(ip)
     return vlan
+
+def make_vlan_interface(vlan, virti):
+    return ixpmgr_models.Vlaninterface.objects.create(
+        vlanid=vlan,
+        virtualinterfaceid=virti,
+        rsmorespecifics=0,
+    )
 
 def make_routeserver(handle, vlan, protocol=4, asn="69"):
     rs, _ = RouteServerNetworkFeature.objects.get_or_create(
@@ -101,11 +122,21 @@ def make_all():
     ipaddr = "1.2.3.4"
     macaddr = "765b71903bc8"
     routerhandle = "handle1"
-    acc = make_chix_account()
-    el = make_exchangelan(acc)
-    ip = make_ip(ipaddr)
-    mac = make_mac(macaddr)
-    vlan = make_vlan(el, ip)
+
+    acct = make_chix_account()
+    virti = make_virtual_interface(acct)
+    el = make_exchangelan(acct)
+    vlan = make_vlan(el)
+    vlani = make_vlan_interface(vlan, virti)
+
+    # breakpoint()
+    ip = make_ip4(ipaddr, acct)
+    vlan.ipv4address_set.add(ip)
+    ip.vlanid = vlan            # redundant?? TODO
+    vlani.ipv4addressid = ip
+
+    mac = make_mac(macaddr, acct)
+
     rout = make_routeserver(routerhandle, vlan)
 
 class AccountTestCase(TestCase):
@@ -143,8 +174,9 @@ class RouteServerNetworkFeatureTestCase(ExchangeLanNetworkServiceTestCase):
         super().setUp()
         Router = ixpmgr_const.Router
         protocol = Router.PROTOCOL_IPV4
-        ip = make_ip("1.2.3.4")
-        self.vlan = make_vlan(self.xlan, ip)
+        ip = make_ip4("1.2.3.4")
+        self.vlan = make_vlan(self.xlan)
+        self.vlan.ipv4address_set.add(ip)
         self.rs = make_routeserver("rs1", self.vlan, protocol)
 
     def test_get(self):
