@@ -32,7 +32,7 @@ class AllowMemberJoiningRule(ixpmgr_models.Cust):
     consuming_account = proxies.null_field()
     network_service = proxies.null_field()
 
-    test_cust_name = ProxyField(Source.name)
+    test_cust_name = proxies.field(Source.name)
     capacity_min = proxies.null_field()
     capacity_max = proxies.null_field()
     # type = proxies.const_field('whitelist')
@@ -69,8 +69,8 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
     metro_area = proxies.const_field("IDK")
     product_offering = proxies.null_field()
     all_nsc_required_contact_roles = proxies.null_field()
-    peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
-    ixfdb_ixid = ProxyField(Source.ixf_ix_id)
+    peeringdb_ixid = proxies.field(Source.peeringdb_ix_id)
+    ixfdb_ixid = proxies.field(Source.ixf_ix_id)
     status = proxies.null_field()
 
     @property

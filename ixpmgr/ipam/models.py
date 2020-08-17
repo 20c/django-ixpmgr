@@ -87,8 +87,7 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     class Meta: proxy=True
     Source = ixpmgr_models.Ipv4Address
     proxies = ProxyManager()
-    # proxies = ProxyManager(inherited=["address", ...])
-
+    # todo: special input handling, inserting different models
     version = proxies.const_field(schema_const.IpVersion.IPV4)
 
     @property
@@ -98,9 +97,9 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
 
     valid_not_before = proxies.null_field()
     valid_not_after = proxies.null_field()
-    pk = ProxyField(Source.address)
+    pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = ProxyField(Source.address)
+    # id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -126,9 +125,9 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
 
     valid_not_before = proxies.null_field()
     valid_not_after = proxies.null_field()
-    pk = ProxyField(Source.address)
+    pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = ProxyField(Source.address)
+    # id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -175,7 +174,7 @@ class MacAddress(ixpmgr_models.Macaddress):
     valid_not_after = proxies.null_field()
 
     network_service_config = proxies.null_field()
-    assigned_at = ProxyField(Source.created)
+    assigned_at = proxies.field(Source.created)
 
     @proxies.property(Source.mac)
     def address(self):

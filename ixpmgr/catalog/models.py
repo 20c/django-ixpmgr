@@ -1,6 +1,6 @@
 from django.db import models
 import django_ixpmgr.v57.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyField, ProxyManager
+from django_ixpmgr.model_util import ProxyManager
 
 
 class Facility(ixpmgr_models.Location):
@@ -10,14 +10,14 @@ class Facility(ixpmgr_models.Location):
 
     Source = ixpmgr_models.Location
 
-    metro_area = ProxyField(Source.city)
-    address_country = ProxyField(Source.country)
-    address_locality = ProxyField(Source.city)
-    address_region = proxies.null_field()
-    postal_code = proxies.null_field()
-    street_address = ProxyField(Source.address)
-    peeringdb_facility_id = ProxyField(Source.pdb_facility_id)
-    cluster = proxies.null_field()
+    metro_area            = proxies.field(Source.city)
+    address_country       = proxies.field(Source.country)
+    address_locality      = proxies.field(Source.city)
+    address_region        = proxies.null_field()
+    postal_code           = proxies.null_field()
+    street_address        = proxies.field(Source.address)
+    peeringdb_facility_id = proxies.field(Source.pdb_facility_id)
+    cluster               = proxies.null_field()
 
     @property
     def operator_name(self):

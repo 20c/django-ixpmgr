@@ -14,9 +14,9 @@ class RegAddress(ixpmgr_models.CompanyRegistrationDetail):
 
     Source = ixpmgr_models.CompanyRegistrationDetail
 
-    locality = ProxyField(Source.towncity)  # max_length=40,
-    region = ProxyField(Source.jurisdiction)
-    postal_code = ProxyField(Source.postcode)
+    locality = proxies.field(Source.towncity)  # max_length=40,
+    region = proxies.field(Source.jurisdiction)
+    postal_code = proxies.field(Source.postcode)
 
     @property
     def street_address(self):
@@ -34,16 +34,16 @@ class BillingInformation(ixpmgr_models.CompanyBillingDetail):
 
     Source = ixpmgr_models.CompanyBillingDetail
 
-    name = ProxyField(Source.billingcontactname)
-    vat_number = ProxyField(Source.vatnumber)
+    name = proxies.field(Source.billingcontactname)
+    vat_number = proxies.field(Source.vatnumber)
 
     @property
     def address(self):
         return self
 
-    country = ProxyField(Source.billingcountry)  # max=2
-    locality = ProxyField(Source.billingtowncity)
-    postal_code = ProxyField(Source.billingpostcode)
+    country = proxies.field(Source.billingcountry)  # max=2
+    locality = proxies.field(Source.billingtowncity)
+    postal_code = proxies.field(Source.billingpostcode)
 
     @property
     def street_address(self):
@@ -68,8 +68,8 @@ class Account(ixpmgr_models.Cust):
     Source = ixpmgr_models.Cust
 
     # name => shortname?
-    address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
-    billing_information = ProxyField(
+    address = proxies.field(Source.company_registered_detail, proxy_model=RegAddress)
+    billing_information = proxies.field(
         Source.company_billing_details, proxy_model=BillingInformation
     )
 
