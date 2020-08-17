@@ -53,7 +53,7 @@ class Connection(ixpmgr_models.Virtualinterface):
 
     @property
     def state(self):
-        # TODO unsure how to implemented this, instinct
+        # TODO: unsure how to implement this, instinct
         # was to check status of physicalinterface
         # (conencted vs not connected), but there can
         # be many physical devices.
@@ -61,7 +61,7 @@ class Connection(ixpmgr_models.Virtualinterface):
 
     @property
     def managing_account(self):
-        # should this be the ix instead?
+        # TODO: should this be the ix instead?
         return self.custid.id
 
     @property
@@ -202,7 +202,7 @@ class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
         # the only specification of speed / capacity
         # we found in the ixp manager schema is
         # directly on the physical interface, so this what
-        # we pass through for now - may need to take a close
+        # we pass through for now - may need to take a closer
         # look at this
 
         return self._physical.speed
@@ -244,7 +244,7 @@ class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
 
     @property
     def managing_account(self):
-        # should this be the ix or the network?
+        # TODO: should this be the ix or the network?
         return self._customer.id
 
     @property
@@ -264,7 +264,7 @@ class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
 
     @property
     def external_ref(self):
-        return f"vlaninterface:{self._customer.autsys}:{self.pk}"
+        return f"vlaninterface:AS{self._customer.autsys}:{self.pk}"
 
     @property
     def type(self):
@@ -332,6 +332,12 @@ class QinQVLanConfig(models.Model):
 
 
 class Dot1QVLanConfig(ixpmgr_models.Vlan):
+
+    """
+    Basic implementation so we can reference it in
+    ExchangeLanNetworkServiceConfig
+    """
+
     class Meta:
         proxy = True
 
@@ -339,8 +345,6 @@ class Dot1QVLanConfig(ixpmgr_models.Vlan):
     Source = ixpmgr_models.Vlan
 
     vlan = ProxyField(Source.id)
-
-
     vlan_ethertype = NullField()
 
     @property
