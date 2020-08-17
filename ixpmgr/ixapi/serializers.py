@@ -1,10 +1,17 @@
 # serializers.py
 from rest_framework import serializers
-ModelSerializer = serializers.ModelSerializer
+# ModelSerializer = serializers.ModelSerializer
 # ModelSerializer = serializers.HyperlinkedModelSerializer
 
 import ixapi_schema.v2.schema as ixser
 from . import models
+
+
+# Shim to workaround lack of read-only inherited fields in DRF
+# https://github.com/encode/django-rest-framework/issues/3533
+class ModelSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(max_length=80, read_only=True)
+
 
 # Pattern ripped from django-rest-polymorphic
 # Simple dispatch, child classes just define a mapping of model class => serializer class
