@@ -28,11 +28,11 @@ class Connection(ixpmgr_models.Virtualinterface):
 
     status = ConstField([])
     role_assignments = ConstField([])
-    purchase_order = NullField()
-    contract_ref = NullField()
-    vlan_types = NullField()
-    outer_vlan_ethertypes = NullField()
-    lacp_timeout = NullField()
+    purchase_order = proxies.null_field()
+    contract_ref = proxies.null_field()
+    vlan_types = proxies.null_field()
+    outer_vlan_ethertypes = proxies.null_field()
+    lacp_timeout = proxies.null_field()
 
     # direct mappings
 
@@ -55,7 +55,7 @@ class Connection(ixpmgr_models.Virtualinterface):
     def state(self):
         # TODO: unsure how to implement this, instinct
         # was to check status of physicalinterface
-        # (conencted vs not connected), but there can
+        # (connected vs not connected), but there can
         # be many physical devices.
         return None
 
@@ -130,9 +130,9 @@ class Port(ixpmgr_models.Switchport):
 
     # unmapped
 
-    media_type = NullField()
-    device = NullField()
-    pop = NullField()
+    media_type = proxies.null_field()
+    device = proxies.null_field()
+    pop = proxies.null_field()
 
     # direct mapped
 
@@ -155,8 +155,8 @@ class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
     class Meta:
         proxy = True
 
-    contract_ref = NullField()
-    purchase_order = NullField()
+    contract_ref = proxies.null_field()
+    purchase_order = proxies.null_field()
 
     @property
     def _customer(self):
@@ -344,8 +344,8 @@ class Dot1QVLanConfig(ixpmgr_models.Vlan):
     proxies = ProxyManager()
     Source = ixpmgr_models.Vlan
 
-    vlan = ProxyField(Source.id)
-    vlan_ethertype = NullField()
+    vlan = proxies.field(Source.id)
+    vlan_ethertype = proxies.null_field()
 
     @property
     def vlan_type(self):

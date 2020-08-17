@@ -36,7 +36,8 @@ class Facility(ixpmgr_models.Location):
 class Device(ixpmgr_models.Switch):
 
     """
-    A Device is a network hardware device, typically a switch, which is located at a specified facility and inside a PointOfPresence. PoPs.
+    A Device is a network hardware device, typically a switch, which is located at a
+    specified facility and inside a PointOfPresence (PoP).
 
     They may be physically located at their related PoPs.
 
@@ -51,8 +52,8 @@ class Device(ixpmgr_models.Switch):
 
     # unmapped
 
-    pop = NullField()
-    capabilities = NullField()
+    pop = proxies.null_field()
+    capabilities = proxies.null_field()
 
     # mapped as is
     # - name
