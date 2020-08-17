@@ -21,18 +21,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = "!d1!la!kl2mntd5gbhs+2nqul1e(@4oy2kfu4y8p-cdpf2(bko"
 
-# DEBUG = True
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": None,
     #"rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
-    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
-    'DEFAULT_PARSER_CLASSES': ('rest_framework.parsers.JSONParser',),
-    "EXCEPTION_HANDLER": "ixapi.errors.handle_exception",
+    # "PAGE_SIZE": 10,
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    # 'DEFAULT_PARSER_CLASSES': ('rest_framework.parsers.JSONParser',),
 }
+
+if not DEBUG:
+    REST_FRAMEWORK["EXCEPTION_HANDLER"] = "ixapi.errors.handle_exception"
 
 # Application definition
 IXPMGR_VERSION = "5.7"
@@ -146,7 +151,3 @@ STATIC_URL = "static/"
 
 # where collectstatic will collect static files for deployment
 STATIC_ROOT = "/var/www/ixpmgr"
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]

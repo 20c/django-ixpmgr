@@ -30,7 +30,6 @@ class PolymorphicSerializer(serializers.Serializer):
     def to_representation(self, instance):
         seri = self.model_serializer_mapping[instance.__class__]
         ret = seri.to_representation(instance)
-        # todo: set "type" to serializer.__polymorphic_type__?
         ret["type"] = seri.__polymorphic_type__
         return ret
 
@@ -49,6 +48,7 @@ class AccountSerializer(ixser.Account, ModelSerializer):
             "external_ref",
             "discoverable",
         ]
+
 
 
 class FacilitySerializer(ixser.Facility, ModelSerializer):
@@ -75,7 +75,7 @@ class IpAddressSerializer(ixser.IpAddress, ModelSerializer):
     class Meta:
         many = True
         model = models.IpAddress
-        fields = (
+        fields = [
             "id",
             "managing_account",
             "consuming_account",
@@ -86,13 +86,13 @@ class IpAddressSerializer(ixser.IpAddress, ModelSerializer):
             "fqdn",
             "valid_not_before",
             "valid_not_after",
-        )
+        ]
 
 class MacAddressSerializer(ixser.MacAddress, ModelSerializer):
     class Meta:
         many = True
         model = models.MacAddress
-        fields = (
+        fields = [
             "id",
             "managing_account",
             "consuming_account",
@@ -102,7 +102,7 @@ class MacAddressSerializer(ixser.MacAddress, ModelSerializer):
             "valid_not_after",
             "assigned_at",
             "network_service_config",
-        )
+        ]
 
 
 # Member list
