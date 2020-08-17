@@ -28,19 +28,19 @@ class AllowMemberJoiningRule(ixpmgr_models.Cust):
     proxies = ProxyManager()
     Source = ixpmgr_models.Cust
 
-    managing_account = NullField()
-    consuming_account = NullField()
-    network_service = NullField()
+    managing_account = proxies.null_field()
+    consuming_account = proxies.null_field()
+    network_service = proxies.null_field()
 
     test_cust_name = ProxyField(Source.name)
-    capacity_min = NullField()
-    capacity_max = NullField()
-    # type = ConstField('whitelist')
+    capacity_min = proxies.null_field()
+    capacity_max = proxies.null_field()
+    # type = proxies.const_field('whitelist')
 
 class DenyMemberJoiningRule(models.Model): pass
     # class Meta: proxy = True
     # Source = ixpmgr_models.Cust
-    # type = ConstField('blacklist')
+    # type = proxies.const_field('blacklist')
 
 
 class NetworkService(models.Model): pass
@@ -63,15 +63,15 @@ class ExchangeLanNetworkService(ixpmgr_models.Infrastructure, _NetworkServiceCus
     class Meta: proxy = True
     Source = ixpmgr_models.Infrastructure
 
-    external_ref = NullField()
+    external_ref = proxies.null_field()
 
     # name => shortname?
-    metro_area = ConstField("IDK")
-    product_offering = NullField()
-    all_nsc_required_contact_roles = NullField()
+    metro_area = proxies.const_field("IDK")
+    product_offering = proxies.null_field()
+    all_nsc_required_contact_roles = proxies.null_field()
     peeringdb_ixid = ProxyField(Source.peeringdb_ix_id)
     ixfdb_ixid = ProxyField(Source.ixf_ix_id)
-    status = NullField()
+    status = proxies.null_field()
 
     @property
     def network_features(self):
@@ -148,9 +148,9 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
     Source = ixpmgr_models.Infrastructure
 
     # asn inherited
-    fqdn = ConstField("example.com") # todo - which vlan iface?
-    required = ConstField(False)
-    all_nfc_required_contact_roles = NullField()
+    fqdn = proxies.const_field("example.com") # todo - which vlan iface?
+    required = proxies.const_field(False)
+    all_nfc_required_contact_roles = proxies.null_field()
 
     @property
     def ixp_specific_flags(self):
@@ -166,7 +166,7 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
         except ObjectDoesNotExist:
             return None
 
-    looking_glass_url = ConstField("https://lg.moon-ix.net/rs1")
+    looking_glass_url = proxies.const_field("https://lg.moon-ix.net/rs1")
 
     @property
     def address_families(self) -> List[str]:
@@ -177,8 +177,8 @@ class RouteServerNetworkFeature(ixpmgr_models.Routers):
         }
         return [afs[self.protocol]]
 
-    session_mode = ConstField(config_const.RouteServerSessionMode.MODE_PUBLIC)
-    available_bgp_session_types = NullField()
+    session_mode = proxies.const_field(config_const.RouteServerSessionMode.MODE_PUBLIC)
+    available_bgp_session_types = proxies.null_field()
 
     @property
     def ip_addresses(self):

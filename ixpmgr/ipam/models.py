@@ -96,8 +96,8 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
         vlani = self._vlan_interface
         if vlani: return self._vlan_interface.ipv4hostname
 
-    valid_not_before = proxies.null_field()()
-    valid_not_after = proxies.null_field()()
+    valid_not_before = proxies.null_field()
+    valid_not_after = proxies.null_field()
     pk = ProxyField(Source.address)
     #TODO: why isnt this happening through pk
     # id = ProxyField(Source.address)
@@ -124,8 +124,8 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
         vlani = self._vlan_interface
         if vlani: return self._vlan_interface.ipv6hostname
 
-    valid_not_before = proxies.null_field()()
-    valid_not_after = proxies.null_field()()
+    valid_not_before = proxies.null_field()
+    valid_not_after = proxies.null_field()
     pk = ProxyField(Source.address)
     #TODO: why isnt this happening through pk
     # id = ProxyField(Source.address)
@@ -170,11 +170,11 @@ class MacAddress(ixpmgr_models.Macaddress):
 
     consuming_account = managing_account
 
-    external_ref = proxies.null_field()()
-    valid_not_before = proxies.null_field()()
-    valid_not_after = proxies.null_field()()
+    external_ref = proxies.null_field()
+    valid_not_before = proxies.null_field()
+    valid_not_after = proxies.null_field()
 
-    network_service_config = proxies.null_field()()
+    network_service_config = proxies.null_field()
     assigned_at = ProxyField(Source.created)
 
     @proxies.property(Source.mac)

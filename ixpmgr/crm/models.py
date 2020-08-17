@@ -85,7 +85,7 @@ class Account(ixpmgr_models.Cust):
     def external_ref(self):
         pass
 
-    discoverable = ConstField(True)
+    discoverable = proxies.const_field(True)
 
     def save(self, *args, **kwargs):
         # Required
