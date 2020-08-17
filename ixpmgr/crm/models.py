@@ -75,15 +75,17 @@ class Account(ixpmgr_models.Cust):
 
     @property
     def managing_account(self):
-        pass
+        # TODO: what is the managing account in the context
+        # of an ixp manager customer account ? itself?
+        return self.id
 
     @property
     def legal_name(self):
-        pass
+        return self.address.registeredname
 
     @property
     def external_ref(self):
-        pass
+        return f"cust:{self.id}"
 
     discoverable = ConstField(True)
 
