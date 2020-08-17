@@ -143,6 +143,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+IXPMANAGER_OPERATOR_NAME = os.environ.get("IXPMANAGER_OPERATOR_NAME")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

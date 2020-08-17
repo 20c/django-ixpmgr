@@ -258,3 +258,71 @@ class NetworkFeatureSerializer(PolymorphicSerializer):
     model_serializer_mapping = {
         models.RouteServerNetworkFeature: RouteServerNetworkFeatureSerializer,
     }
+
+# Connection
+
+class ConnectionSerializer(ixser.Connection, serializers.ModelSerializer):
+    class Meta:
+        many = True
+        model = models.Connection
+        fields = (
+            "state",
+            "status",
+            "managing_account",
+            "consuming_account",
+            "billing_account",
+            "purchase_order",
+            "external_ref",
+            "contract_ref",
+            "role_assignments",
+            "mode",
+            "lacp_timeout",
+            "speed",
+            "name",
+            "ports",
+            "vlan_types",
+            "outer_vlan_ethertypes",
+        )
+
+
+# Network service config
+
+class ExchangeLanNetworkServiceConfigSerializer(ixser.ExchangeLanNetworkServiceConfig, serializers.ModelSerializer):
+
+    class Meta:
+        many = True
+        model = models.ExchangeLanNetworkServiceConfig
+        fields = (
+            "type",
+            "state",
+            "status",
+            "id",
+            "network_service",
+            "managing_account",
+            "consuming_account",
+            "external_ref",
+            "purchase_order",
+            "contract_ref",
+            "billing_account",
+            "role_assignments",
+            "connection",
+            "network_feature_configs",
+            "vlan_config",
+            "capacity",
+            "asns",
+            "macs",
+            "ips",
+            "listed",
+        )
+
+
+class NetworkServiceConfigSerializer(PolymorphicSerializer):
+    model_serializer_mapping = {
+        models.ExchangeLanNetworkServiceConfig: ExchangeLanNetworkServiceConfigSerializer,
+#        models.P2PNetworkServiceConfig: P2PNetworkServiceConfigSerializer,
+#        models.P2MPNetworkServiceConfig: P2MPNetworkServiceConfigSerializer,
+#        models.MP2MPNetworkServiceConfig: MP2MPNetworkServiceConfigSerializer,
+#        models.CloudNetworkServiceConfig: CloudNetworkServiceConfigSerializer,
+    }
+
+

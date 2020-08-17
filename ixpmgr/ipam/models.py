@@ -146,10 +146,10 @@ class IpAddress(models.Model):
     )
 
 
-class MacAddress(ixpmgr_models.Macaddress):
+class MacAddress(ixpmgr_models.L2Address):
     class Meta: proxy = True
     proxies = ProxyManager()
-    Source = ixpmgr_models.Macaddress
+    Source = ixpmgr_models.L2Address
 
     @proxies.property(Source.vlan_interface)
     def managing_account(self):
@@ -191,3 +191,6 @@ class MacAddress(ixpmgr_models.Macaddress):
         if value.find(':') != -1:
             value = ''.join(value.split(':'))
         self.mac = value
+    @property
+    def pk(self):
+        return self.address
