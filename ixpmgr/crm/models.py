@@ -1,21 +1,22 @@
 from django.db import models
-import django_ixpmgr.models as ixpmgr_models
-from django_ixpmgr.model_util import ProxyModel, ProxyField, ProxyManager
+import django_ixpmgr.v57.models as ixpmgr_models
+from django_ixpmgr.model_util import *
 
 
 def join_address(*parts):
     return "\n".join(p for p in parts if p) or None
 
 
-class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
+class RegAddress(ixpmgr_models.CompanyRegistrationDetail):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
     Source = ixpmgr_models.CompanyRegistrationDetail
 
-    locality = ProxyField(Source.towncity)  # max_length=40,
-    region = ProxyField(Source.jurisdiction)
-    postal_code = ProxyField(Source.postcode)
+    locality = proxies.field(Source.towncity)  # max_length=40,
+    region = proxies.field(Source.jurisdiction)
+    postal_code = proxies.field(Source.postcode)
 
     @property
     def street_address(self):
@@ -26,23 +27,23 @@ class RegAddress(ProxyModel, ixpmgr_models.CompanyRegistrationDetail):
         return None
 
 
-class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
+class BillingInformation(ixpmgr_models.CompanyBillingDetail):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
     Source = ixpmgr_models.CompanyBillingDetail
 
-    name = ProxyField(Source.billingcontactname)
-    vat_number = ProxyField(Source.vatnumber)
+    name = proxies.field(Source.billingcontactname)
+    vat_number = proxies.field(Source.vatnumber)
 
     @property
     def address(self):
         return self
 
-    country = ProxyField(Source.billingcountry)  # max=2
-    locality = ProxyField(Source.billingtowncity)
-    # region = ProxyField(Source.jurisdiction)
-    postal_code = ProxyField(Source.billingpostcode)
+    country = proxies.field(Source.billingcountry)  # max=2
+    locality = proxies.field(Source.billingtowncity)
+    postal_code = proxies.field(Source.billingpostcode)
 
     @property
     def street_address(self):
@@ -59,33 +60,34 @@ class BillingInformation(ProxyModel, ixpmgr_models.CompanyBillingDetail):
         super().save(*args, **kwargs)
 
 
-class Account(ProxyModel, ixpmgr_models.Cust):
+class Account(ixpmgr_models.Cust):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
 
     Source = ixpmgr_models.Cust
 
-    address = ProxyField(Source.company_registered_detail, proxy_model=RegAddress)
-    billing_information = ProxyField(
+    # name => shortname?
+    address = proxies.field(Source.company_registered_detail, proxy_model=RegAddress)
+    billing_information = proxies.field(
         Source.company_billing_details, proxy_model=BillingInformation
     )
 
-    # todo
     @property
     def managing_account(self):
-        pass
+        # TODO: what is the managing account in the context
+        # of an ixp manager customer account ? itself?
+        return self.id
 
     @property
     def legal_name(self):
-        pass
+        return self.address.registeredname
 
     @property
     def external_ref(self):
-        pass
+        return f"cust:{self.id}"
 
-    @property
-    def discoverable(self):
-        pass
+    discoverable = proxies.const_field(True)
 
     def save(self, *args, **kwargs):
         # Required
@@ -96,11 +98,10 @@ class Account(ProxyModel, ixpmgr_models.Cust):
         super().save(*args, **kwargs)
 
 
-class Contact(ProxyModel, ixpmgr_models.Contact):
+class Contact(ixpmgr_models.Contact):
+    proxies = ProxyManager()
     class Meta:
         proxy = True
-
-    pass
 
 
 class Role(models.Model):

@@ -6,7 +6,7 @@ class Router:
     """
 
     route_app_labels = {
-        "django_ixpmgr",
+        "ixpmgr",
         "catalog",
         "service",
         "crm",

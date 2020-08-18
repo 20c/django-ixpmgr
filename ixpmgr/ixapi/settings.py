@@ -19,29 +19,41 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "!d1!la!kl2mntd5gbhs+2nqul1e(@4oy2kfu4y8p-cdpf2(bko"
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": None,
+    #"rest_framework.pagination.PageNumberPagination",
+    # "PAGE_SIZE": 10,
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    # 'DEFAULT_PARSER_CLASSES': ('rest_framework.parsers.JSONParser',),
 }
 
-# Application definition
+if not DEBUG:
+    REST_FRAMEWORK["EXCEPTION_HANDLER"] = "ixapi.errors.handle_exception"
 
-INSTALLED_APPS = [
-    "ixpmgr",
+# Application definition
+IXPMGR_VERSION = "5.7"
+IXPMGR_APP = "django_ixpmgr.v57.IxpManagerConfig"
+
+IXAPI_NAMESPACES = [
     "crm",
     "catalog",
     "service",
     "ipam",
     "config",
-    "django_ixpmgr",
+]
+
+INSTALLED_APPS = [
+    *IXAPI_NAMESPACES,
+    IXPMGR_APP,
     "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,7 +73,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ixpmgr.urls"
+ROOT_URLCONF = "ixapi.urls"
 
 TEMPLATES = [
     {
@@ -79,8 +91,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "ixpmgr.wsgi.application"
+WSGI_APPLICATION = "ixapi.wsgi.application"
 
+# complicates testing; desired? - todo
+APPEND_SLASH = False
+
+ERROR_DOCS_BASE_URL = "https://errors.ix-api.net/v2/" # todo
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -127,8 +143,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+IXPMANAGER_OPERATOR_NAME = os.environ.get("IXPMANAGER_OPERATOR_NAME")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
+
+# where collectstatic will collect static files for deployment
+STATIC_ROOT = "/var/www/ixpmgr"
