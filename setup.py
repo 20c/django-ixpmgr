@@ -28,7 +28,7 @@ setup(
         "Topic :: Internet",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    packages=find_packages("src", "ixpmgr"),
+    packages=find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
     # install_requires=REQUIREMENTS,
