@@ -93,3 +93,6 @@ class P2MPNetworkProductOffering(models.Model):
 
 class MP2MPNetworkProductOffering(models.Model):
     pass
+
+class MetroArea(models.Model): pass
+class MetroAreaNetwork(models.Model): pass

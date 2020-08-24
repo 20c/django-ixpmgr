@@ -100,8 +100,6 @@ class MacAddressSerializer(ixser.MacAddress, ModelSerializer):
             "address",
             "valid_not_before",
             "valid_not_after",
-            "assigned_at",
-            "network_service_config",
         ]
 
 

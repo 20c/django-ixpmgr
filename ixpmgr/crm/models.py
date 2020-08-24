@@ -104,5 +104,5 @@ class Contact(ixpmgr_models.Contact):
         proxy = True
 
 
-class Role(models.Model):
-    pass
+class Role(models.Model): pass
+class RoleAssignment(models.Model): pass

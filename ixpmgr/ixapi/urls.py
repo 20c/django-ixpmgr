@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.urls import include, path, re_path
 from django.conf import settings
-from django.conf.urls.static import static as static_urls
 from django.conf.urls import handler404
 from django.contrib import admin
 from django.views.static import serve as serve_static
