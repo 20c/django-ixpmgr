@@ -1,6 +1,6 @@
 import os
 import pytest
-
+import json
 
 
 @pytest.fixture
@@ -33,3 +33,22 @@ def ixpmgr_data():
 
     # load initial data
     call_command("loaddata", path, app="ixpmgr", database="ixpmanager")
+
+    with open(path) as json_data:
+        data = json.load(json_data)
+    return format_data(data)
+
+def format_data(data):
+    formatted_data = {}
+    for instance in data:
+        model = instance["model"]
+        pk = instance["pk"]
+        fields = instance["fields"]
+        if model not in formatted_data:
+            formatted_data[model] = {}
+        formatted_data[model][pk] = fields
+    return formatted_data
+
+
+
+ 
