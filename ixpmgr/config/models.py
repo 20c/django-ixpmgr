@@ -147,7 +147,8 @@ class Port(ixpmgr_models.Switchport):
 class ExchangeLanNetworkServiceConfig(ixpmgr_models.Vlaninterface):
 
     """
-    A NetworkServiceConfig is a customer's configuration for usage of a NetworkService, e.g. the configuration of a (subset of a) connection for that customer's traffic
+    A NetworkServiceConfig is a customer's configuration for usage of a NetworkService,
+    e.g. the configuration of a (subset of a) connection for that customer's traffic
     """
 
     proxies = ProxyManager()
