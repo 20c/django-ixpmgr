@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import models
 
 from ixapi_schema.v2.constants import ipam as schema_const
@@ -99,7 +100,7 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     valid_not_after = proxies.null_field()
     pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = proxies.field(Source.address)
+    id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -127,7 +128,7 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     valid_not_after = proxies.null_field()
     pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = proxies.field(Source.address)
+    id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -173,7 +174,15 @@ class MacAddress(ixpmgr_models.L2Address):
     valid_not_before = proxies.null_field()
     valid_not_after = proxies.null_field()
 
-    network_service_config = proxies.null_field()
+    @property
+    def network_service_config(self):
+        ExchangeLanNetworkServiceConfig = apps.get_model('config', 'ExchangeLanNetworkServiceConfig')
+        return ExchangeLanNetworkServiceConfig.objects.get(pk=self.vlan_interface.id)
+
+    @network_service_config.setter
+    def network_service_config(self, vlani: ixpmgr_models.Vlaninterface):
+        self.vlan_interface = vlani
+
     assigned_at = proxies.field(Source.created)
 
     @proxies.property(Source.mac)
@@ -191,6 +200,8 @@ class MacAddress(ixpmgr_models.L2Address):
         if value.find(':') != -1:
             value = ''.join(value.split(':'))
         self.mac = value
+
     @property
     def pk(self):
         return self.address
+
