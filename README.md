@@ -1,13 +1,13 @@
 
 # django-ixpmgr
-A (very much work in progress) django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager)
+A (work in progress) django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager) conforming to the [IX-API](https://ix-api.net/).
 
 ### License
 
-Copyright 2015 20C, LLC
+Copyright 2020 20C, LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this softare except in compliance with the License.
+you may not use this software except in compliance with the License.
 You may obtain a copy of the License at
 
    http://www.apache.org/licenses/LICENSE-2.0
@@ -42,7 +42,7 @@ RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
     updates mac address for specified virtual port
 
 ### Model
-Model is currently largely just done from a `manage.py inspectdb`, with some
+Model is currently largely just done via `manage.py inspectdb`, with some
 normalization. This is by no means complete, specifically, anything marked with
 '# Field name made lowercase.' should be converted to use underscores.
 
@@ -61,4 +61,10 @@ Must add to application.ini:
 First 3 octets of version match the official IXP-Manager release, anything with
 a 4th octect should be considered development.
 
+### Server
 
+The Django application can be run via `manage.py runserver` from the
+`src/` directory. IX-API endpoints will forward ooperations to the
+corresponding backend IXP-Manager objects. Currently, all API objects
+are read-only, except for `/macs` which allows updating the `address`
+field.
