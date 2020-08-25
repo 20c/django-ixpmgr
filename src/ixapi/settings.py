@@ -148,7 +148,7 @@ IXPMANAGER_OPERATOR_NAME = os.environ.get("IXPMANAGER_OPERATOR_NAME")
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 # where collectstatic will collect static files for deployment
 STATIC_ROOT = "/var/www/ixpmgr"

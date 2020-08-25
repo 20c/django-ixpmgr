@@ -261,6 +261,39 @@ class MultiQuerySet(models.QuerySet):
             qs.filter(*args, **kwargs) for qs in self.source_querysets
         )
 
+    def get(self, *args, **kwargs):
+
+        """
+        implements get functionality against multiple
+        query-sets with proper DoesNotExist and
+        MultipleObjectsReturned error handling
+        """
+
+        obj = []
+        for qs in self.source_querysets:
+            try:
+                print(kwargs)
+                obj.append(qs.get(*args, **kwargs))
+                print(obj)
+            except qs.model.DoesNotExist:
+                pass
+
+        # if no objects were found in any of the querysets
+        # raise DoesNotExist error
+
+        if not obj:
+            raise qs.model.DoesNotExist()
+
+        # if a match was found in more than one of the
+        # querysets raise a MultipleObjectsReturned error
+
+        if len(obj) > 1:
+            raise qs.model.MultipleObjectsReturned()
+
+        # otherwise return the one object that was a match
+
+        return obj[0]
+
     def all(self):
         return chain_querysets(self.source_querysets)
 

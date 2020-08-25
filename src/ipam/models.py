@@ -100,7 +100,7 @@ class IpAddress4(ixpmgr_models.Ipv4Address, _IpMixin):
     valid_not_after = proxies.null_field()
     pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = proxies.field(Source.address)
+    id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -128,7 +128,7 @@ class IpAddress6(ixpmgr_models.Ipv6Address, _IpMixin):
     valid_not_after = proxies.null_field()
     pk = proxies.field(Source.address)
     #TODO: why isnt this happening through pk
-    # id = proxies.field(Source.address)
+    id = proxies.field(Source.address)
 
     @proxies.property(Source.vlanid)
     def managing_account(self):
@@ -200,6 +200,8 @@ class MacAddress(ixpmgr_models.L2Address):
         if value.find(':') != -1:
             value = ''.join(value.split(':'))
         self.mac = value
+
     @property
     def pk(self):
         return self.address
+

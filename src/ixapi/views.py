@@ -38,8 +38,14 @@ class FacilityViewSet(_BaseViewSet):
     serializer_class = serializers.FacilitySerializer
 
 class IpAddressViewSet(_BaseViewSet):
+    lookup_value_regex = "[0-9.:]+"
+    lookup_field = "address"
     queryset = models.IpAddress.objects.all()
     serializer_class = serializers.IpAddressSerializer
+
+    def get_object(self):
+        return models.IpAddress.objects.get(**self.kwargs)
+
 
 # mac address is PUTable
 class MacAddressViewSet(PutableViewSet):
