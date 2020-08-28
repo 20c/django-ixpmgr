@@ -98,7 +98,7 @@ class _ConstFieldDescriptor:
         return self.value
 
     def __set__(self, instance, value):
-        print("warning: trying to set const field")
+        # print("warning: trying to set const field")
         pass
 
 def get_field_name(source):
