@@ -161,10 +161,8 @@ class ProxyManager(models.Manager):
             key: kwargs.pop(key)
             for key in self.writable_fields() if key in kwargs
         }
-        # obj = super().create(**kwargs)
         obj = self.model(**kwargs)
         for key, value in values.items():
-            # breakpoint()
             setattr(obj, key, value)
         obj.save()
         return obj
