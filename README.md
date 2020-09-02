@@ -1,4 +1,3 @@
-
 # django-ixpmgr
 Django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager).
 
@@ -60,11 +59,3 @@ Must add to application.ini:
 ### Versioning
 First 3 octets of version match the official IXP-Manager release, anything with
 a 4th octect should be considered development.
-
-### Server
-
-The Django application can be run via `manage.py runserver` from the
-`src/` directory. IX-API endpoints will forward ooperations to the
-corresponding backend IXP-Manager objects. Currently, all API objects
-are read-only, except for `/macs` which allows updating the `address`
-field.
