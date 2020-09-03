@@ -1,6 +1,5 @@
-
 # django-ixpmgr
-A (work in progress) django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager) conforming to the [IX-API](https://ix-api.net/).
+Django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager).
 
 ### License
 
@@ -22,21 +21,21 @@ limitations under the License.
 
 Django settings (defined in config as IXPMGR_<NAME>, included as ixpmgr.settings.<NAME>):
 
-HOME = getattr(settings, 'IXPMGR_HOME', '/usr/local/ixp')
+    HOME = getattr(settings, 'IXPMGR_HOME', '/usr/local/ixp')
 
-RDNS_DOMAIN= getattr(settings, 'IXPMGR_RDNS_DOMAIN', '')
-RDNS_FORMAT = getattr(settings, 'IXPMGR_RDNS_FORMAT', 'as{cust.autsys}.{intf}.{phy_intf.switchport.switch.name}')
-RDNS_INTF_REGEX = getattr(settings, 'IXPMGR_RDNS_INTF_REGEX', [('[ /]', '-')])
-RDNS_IPV6_PREFIX_LEN= getattr(settings, 'IXPMGR_RDNS_IPV6_PREFIX_LEN', 64)
-RDNS_KEYRING = getattr(settings, 'IXPMGR_RDNS_KEYRING', {})
-RDNS_SERVER = getattr(settings, 'IXPMGR_RDNS_SERVER', None)
-RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
+    RDNS_DOMAIN= getattr(settings, 'IXPMGR_RDNS_DOMAIN', '')
+    RDNS_FORMAT = getattr(settings, 'IXPMGR_RDNS_FORMAT', 'as{cust.autsys}.{intf}.{phy_intf.switchport.switch.name}')
+    RDNS_INTF_REGEX = getattr(settings, 'IXPMGR_RDNS_INTF_REGEX', [('[ /]', '-')])
+    RDNS_IPV6_PREFIX_LEN= getattr(settings, 'IXPMGR_RDNS_IPV6_PREFIX_LEN', 64)
+    RDNS_KEYRING = getattr(settings, 'IXPMGR_RDNS_KEYRING', {})
+    RDNS_SERVER = getattr(settings, 'IXPMGR_RDNS_SERVER', None)
+    RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
 
 ### Commands
 
 `upd_rdns`
     updates RDNS based on configured template for ports without RDNS
-    --force to do all of them
+    `--force` to do all of them
 
 `set_l2db` <virtual interface id> <mac address>
     updates mac address for specified virtual port
@@ -60,11 +59,3 @@ Must add to application.ini:
 ### Versioning
 First 3 octets of version match the official IXP-Manager release, anything with
 a 4th octect should be considered development.
-
-### Server
-
-The Django application can be run via `manage.py runserver` from the
-`src/` directory. IX-API endpoints will forward ooperations to the
-corresponding backend IXP-Manager objects. Currently, all API objects
-are read-only, except for `/macs` which allows updating the `address`
-field.

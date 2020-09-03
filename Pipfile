@@ -4,18 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-# ix-api-schema = "1.2.8"
-# schemathesis = "2.3.3"
-pytest-django = "3.9"
+# pytest-django = "3.9"
 tox = "3.19"
-ipython = "7.6"
-
-[packages]
-django = "<3,>=2.2"
-mysqlclient = "*"
-8b74c9c = {file = "https://gitlab.com/ix-api/ix-api-schema/-/archive/develop/ix-api-schema-develop.zip"}
-djangorestframework = "3.9.1"
-django-ixpmgr = {editable = true,path = "."}
+pytest = "*"
+pytest-cov = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.6"          #todo: loosen ?
