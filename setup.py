@@ -11,6 +11,16 @@ VERSION = read_file("Ctl/VERSION")
 # REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
 # TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
 
+def read_file(name):
+    with open(name) as fobj:
+        return fobj.read().strip()
+
+
+LONG_DESCRIPTION = read_file("README.md")
+VERSION = read_file("Ctl/VERSION")
+REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
+TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
+
 
 setup(
     name="django-ixpmgr",
@@ -25,6 +35,9 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Internet",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
