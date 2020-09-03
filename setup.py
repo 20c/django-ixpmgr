@@ -11,17 +11,6 @@ VERSION = read_file("Ctl/VERSION")
 # REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
 # TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
 
-def read_file(name):
-    with open(name) as fobj:
-        return fobj.read().strip()
-
-
-LONG_DESCRIPTION = read_file("README.md")
-VERSION = read_file("Ctl/VERSION")
-REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
-TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
-
-
 setup(
     name="django-ixpmgr",
     version=VERSION,
