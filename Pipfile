@@ -11,3 +11,6 @@ pytest-cov = "*"
 
 [requires]
 python_version = "3.6"          #todo: loosen ?
+
+[packages]
+semver = "==2.10.2"

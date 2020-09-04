@@ -1,3 +1,10 @@
+from .settings import VERSIONED_APP
+
+if VERSIONED_APP == "v5":
+    from django_ixpmgr.v5.const import *
+elif VERSIONED_APP == "v3":
+    from djnago_ixpmgr.v3.const import *
+
 # TODO - gen from perl?
 # ../IXP-Manager/tools/perl-lib/IXPManager/lib/IXPManager/Const.pm
 # gen from PHP better, but it's all spread out
