@@ -3,7 +3,7 @@ Django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager).
 
 ### License
 
-Copyright 2020 20C, LLC
+Copyright 2015-2020 20C, LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this software except in compliance with the License.
@@ -19,17 +19,19 @@ limitations under the License.
 
 ### Configuration
 
-Django settings (defined in config as IXPMGR_<NAME>, included as ixpmgr.settings.<NAME>):
+Django settings (defined in config as `IXPMGR_<NAME>`, included as `ixpmgr.settings.<NAME>`):
 
-    HOME = getattr(settings, 'IXPMGR_HOME', '/usr/local/ixp')
+```py
+HOME = getattr(settings, 'IXPMGR_HOME', '/usr/local/ixp')
 
-    RDNS_DOMAIN= getattr(settings, 'IXPMGR_RDNS_DOMAIN', '')
-    RDNS_FORMAT = getattr(settings, 'IXPMGR_RDNS_FORMAT', 'as{cust.autsys}.{intf}.{phy_intf.switchport.switch.name}')
-    RDNS_INTF_REGEX = getattr(settings, 'IXPMGR_RDNS_INTF_REGEX', [('[ /]', '-')])
-    RDNS_IPV6_PREFIX_LEN= getattr(settings, 'IXPMGR_RDNS_IPV6_PREFIX_LEN', 64)
-    RDNS_KEYRING = getattr(settings, 'IXPMGR_RDNS_KEYRING', {})
-    RDNS_SERVER = getattr(settings, 'IXPMGR_RDNS_SERVER', None)
-    RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
+RDNS_DOMAIN= getattr(settings, 'IXPMGR_RDNS_DOMAIN', '')
+RDNS_FORMAT = getattr(settings, 'IXPMGR_RDNS_FORMAT', 'as{cust.autsys}.{intf}.{phy_intf.switchport.switch.name}')
+RDNS_INTF_REGEX = getattr(settings, 'IXPMGR_RDNS_INTF_REGEX', [('[ /]', '-')])
+RDNS_IPV6_PREFIX_LEN= getattr(settings, 'IXPMGR_RDNS_IPV6_PREFIX_LEN', 64)
+RDNS_KEYRING = getattr(settings, 'IXPMGR_RDNS_KEYRING', {})
+RDNS_SERVER = getattr(settings, 'IXPMGR_RDNS_SERVER', None)
+RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
+```
 
 ### Commands
 
