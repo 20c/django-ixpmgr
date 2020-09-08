@@ -4,6 +4,10 @@ if VERSIONED_APP == "v5":
     from django_ixpmgr.v5.const import *
 elif VERSIONED_APP == "v3":
     from django_ixpmgr.v3.const import *
+else:
+    raise ValueError(
+        f"Could not load const for version {VERSIONED_APP}"
+    )
 
 # TODO - gen from perl?
 # ../IXP-Manager/tools/perl-lib/IXPManager/lib/IXPManager/Const.pm
