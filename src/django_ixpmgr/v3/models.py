@@ -9,7 +9,7 @@ from django_extensions.db.fields import ModificationDateTimeField, CreationDateT
 
 class ApiKeys(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    user = models.ForeignKey("User")
+    user = models.ForeignKey("User", on_delete=models.DO_NOTHING)
     api_key = models.CharField(db_column="apiKey", unique=True, max_length=255)
     expires = models.DateTimeField(blank=True, null=True)
     allowed_ips = models.TextField(db_column="allowedIPs", blank=True)
@@ -42,7 +42,7 @@ class Bgpsessiondata(models.Model):
 class Cabinet(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     locationid = models.ForeignKey(
-        "Location", db_column="locationid", blank=True, null=True
+        "Location", db_column="locationid", blank=True, null=True, on_delete=models.DO_NOTHING
     )
     name = models.CharField(unique=True, max_length=255, blank=True)
     cololocation = models.CharField(max_length=255, blank=True)
@@ -58,7 +58,7 @@ class Cabinet(models.Model):
 class ChangeLog(models.Model):
     id = models.BigIntegerField(primary_key=True)
     created_by = models.ForeignKey(
-        "User", db_column="created_by", blank=True, null=True
+        "User", db_column="created_by", blank=True, null=True, on_delete=models.DO_NOTHING
     )
     title = models.CharField(max_length=255)
     details = models.TextField()
@@ -150,8 +150,12 @@ class CompanyRegistrationDetail(models.Model):
 
 class Consoleserverconnection(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    customer = models.ForeignKey("Customer", db_column="custid", blank=True, null=True)
-    switchid = models.ForeignKey("Switch", db_column="switchid", blank=True, null=True)
+    customer = models.ForeignKey(
+        "Customer", db_column="custid", blank=True, null=True, on_delete=models.DO_NOTHING
+    )
+    switchid = models.ForeignKey(
+        "Switch", db_column="switchid", blank=True, null=True, on_delete=models.DO_NOTHING
+    )
     description = models.CharField(max_length=255, blank=True)
     port = models.CharField(max_length=255, blank=True)
     speed = models.IntegerField(blank=True, null=True)
@@ -168,8 +172,8 @@ class Consoleserverconnection(models.Model):
 
 class Contact(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    user = models.ForeignKey("User", unique=True, blank=True, null=True)
-    customer = models.ForeignKey("Customer", db_column="custid", blank=True, null=True)
+    user = models.ForeignKey("User", unique=True, blank=True, null=True, on_delete=models.DO_NOTHING)
+    customer = models.ForeignKey("Customer", db_column="custid", blank=True, null=True, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255)
     position = models.CharField(max_length=50, blank=True)
     email = models.CharField(max_length=255, blank=True)
@@ -203,8 +207,8 @@ class ContactGroup(models.Model):
 
 
 class ContactToGroup(models.Model):
-    contact = models.ForeignKey(Contact)
-    contact_group = models.ForeignKey(ContactGroup)
+    contact = models.ForeignKey(Contact, on_delete=models.DO_NOTHING)
+    contact_group = models.ForeignKey(ContactGroup, on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -213,14 +217,14 @@ class ContactToGroup(models.Model):
 
 class Customer(models.Model):
     # id = models.AutoField()
-    irrdb = models.ForeignKey("Irrdbconfig", db_column="irrdb", blank=True, null=True)
+    irrdb = models.ForeignKey("Irrdbconfig", db_column="irrdb", blank=True, null=True, on_delete=models.DO_NOTHING)
     company_registered_detail = models.ForeignKey(
-        CompanyRegistrationDetail, blank=True, null=True
+        CompanyRegistrationDetail, blank=True, null=True, on_delete=models.DO_NOTHING
     )
     company_billing_details = models.ForeignKey(
-        CompanyBillingDetail, blank=True, null=True
+        CompanyBillingDetail, blank=True, null=True, on_delete=models.DO_NOTHING
     )
-    reseller = models.ForeignKey("self", db_column="reseller", blank=True, null=True)
+    reseller = models.ForeignKey("self", db_column="reseller", blank=True, null=True, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True)
     type = models.IntegerField(blank=True, null=True)
     shortname = models.CharField(unique=True, max_length=255, blank=True)
@@ -263,7 +267,7 @@ class Customer(models.Model):
 
 class CustomerNotes(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer)
+    customer = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
     private = models.IntegerField()
     title = models.CharField(max_length=255)
     note = models.TextField()
@@ -277,8 +281,8 @@ class CustomerNotes(models.Model):
 
 class Customerkit(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True)
-    cabinetid = models.ForeignKey(Cabinet, db_column="cabinetid", blank=True, null=True)
+    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True, on_delete=models.DO_NOTHING)
+    cabinetid = models.ForeignKey(Cabinet, db_column="cabinetid", blank=True, null=True, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True)
     descr = models.CharField(max_length=255, blank=True)
 
@@ -288,8 +292,8 @@ class Customerkit(models.Model):
 
 
 class CustomerToIxp(models.Model):
-    customer = models.ForeignKey(Customer)
-    ixp = models.ForeignKey("Ixp")
+    customer = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
+    ixp = models.ForeignKey("Ixp", on_delete=models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -298,7 +302,7 @@ class CustomerToIxp(models.Model):
 
 class Infrastructure(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    ixp = models.ForeignKey("Ixp")
+    ixp = models.ForeignKey("Ixp", on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True)
     shortname = models.CharField(max_length=255, blank=True)
     isprimary = models.IntegerField(db_column="isPrimary")  # Field name made lowercase.
@@ -311,7 +315,7 @@ class Infrastructure(models.Model):
 
 class Ipv4Address(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True)
+    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True, on_delete=models.DO_NOTHING)
     address = models.CharField(max_length=16, blank=True)
 
     class Meta:
@@ -321,7 +325,7 @@ class Ipv4Address(models.Model):
 
 class Ipv6Address(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True)
+    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True, on_delete=models.DO_NOTHING)
     address = models.CharField(max_length=40, blank=True)
 
     class Meta:
@@ -331,7 +335,7 @@ class Ipv6Address(models.Model):
 
 class IrrdbAsn(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer)
+    customer = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
     asn = models.IntegerField()
     protocol = models.IntegerField()
     first_seen = models.DateTimeField()
@@ -343,7 +347,7 @@ class IrrdbAsn(models.Model):
 
 class IrrdbPrefix(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer)
+    customer = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
     prefix = models.CharField(max_length=255)
     protocol = models.IntegerField()
     first_seen = models.DateTimeField()
@@ -423,6 +427,7 @@ class MacAddress(models.Model):
         db_column="virtualinterfaceid",
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     firstseen = models.DateTimeField(blank=True, null=True)
     lastseen = models.DateTimeField(blank=True, null=True)
@@ -436,7 +441,7 @@ class MacAddress(models.Model):
 class Meeting(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     created_by = models.ForeignKey(
-        "User", db_column="created_by", blank=True, null=True
+        "User", db_column="created_by", blank=True, null=True, on_delete=models.DO_NOTHING
     )
     title = models.CharField(max_length=255, blank=True)
     before_text = models.TextField(blank=True)
@@ -456,7 +461,7 @@ class Meeting(models.Model):
 
 class MeetingItem(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    meeting = models.ForeignKey(Meeting, blank=True, null=True)
+    meeting = models.ForeignKey(Meeting, blank=True, null=True, on_delete=models.DO_NOTHING)
     title = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=255, blank=True)
     role = models.CharField(max_length=255, blank=True)
@@ -480,7 +485,7 @@ class MeetingItem(models.Model):
 
 class Netinfo(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    vlan = models.ForeignKey("Vlan")
+    vlan = models.ForeignKey("Vlan", on_delete=models.DO_NOTHING)
     protocol = models.IntegerField()
     property = models.CharField(max_length=255)
     ix = models.IntegerField()
@@ -493,7 +498,7 @@ class Netinfo(models.Model):
 
 class Networkinfo(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True)
+    vlan = models.ForeignKey("Vlan", db_column="vlanid", blank=True, null=True, on_delete=models.DO_NOTHING)
     protocol = models.IntegerField(blank=True, null=True)
     network = models.CharField(max_length=255, blank=True)
     masklen = models.IntegerField(blank=True, null=True)
@@ -518,9 +523,9 @@ class Oui(models.Model):
 
 class PeeringManager(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True)
+    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True, on_delete=models.DO_NOTHING)
     peer = models.ForeignKey(
-        Customer, related_name="peer", db_column="peerid", blank=True, null=True
+        Customer, related_name="peer", db_column="peerid", blank=True, null=True, on_delete=models.DO_NOTHING
     )
     email_last_sent = models.DateTimeField(blank=True, null=True)
     emails_sent = models.IntegerField(blank=True, null=True)
@@ -538,10 +543,10 @@ class PeeringManager(models.Model):
 class PeeringMatrix(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     x_customer = models.ForeignKey(
-        Customer, related_name="x_cust_id", db_column="x_custid", blank=True, null=True
+        Customer, related_name="x_cust_id", db_column="x_custid", blank=True, null=True, on_delete=models.DO_NOTHING
     )
     y_customer = models.ForeignKey(
-        Customer, related_name="y_cust_id", db_column="y_custid", blank=True, null=True
+        Customer, related_name="y_cust_id", db_column="y_custid", blank=True, null=True, on_delete=models.DO_NOTHING
     )
 
     vlan = models.IntegerField(blank=True, null=True)
@@ -564,9 +569,11 @@ class PhysicalInterface(models.Model):
         unique=True,
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     fanout_physical_interface = models.ForeignKey(
-        "self", unique=True, blank=True, null=True
+        "self", unique=True, blank=True, null=True,
+        on_delete=models.DO_NOTHING,
     )
     virtual_interface = models.ForeignKey(
         "VirtualInterface",
@@ -574,6 +581,7 @@ class PhysicalInterface(models.Model):
         db_column="virtualinterfaceid",
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     status = models.IntegerField(blank=True, null=True)
     speed = models.IntegerField(blank=True, null=True)
@@ -588,7 +596,8 @@ class PhysicalInterface(models.Model):
 
 class RsPrefixes(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True)
+    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     timestamp = models.DateTimeField(blank=True, null=True)
     prefix = models.CharField(max_length=64, blank=True)
     protocol = models.IntegerField(blank=True, null=True)
@@ -602,10 +611,13 @@ class RsPrefixes(models.Model):
 
 class SecEvent(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True)
-    switchid = models.ForeignKey("Switch", db_column="switchid", blank=True, null=True)
+    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
+    switchid = models.ForeignKey("Switch", db_column="switchid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     switchportid = models.ForeignKey(
-        "Switchport", db_column="switchportid", blank=True, null=True
+        "Switchport", db_column="switchportid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,
     )
     type = models.CharField(max_length=255)
     message = models.TextField(blank=True)
@@ -631,10 +643,13 @@ class Session(models.Model):
 class Switch(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     infrastructure = models.ForeignKey(
-        Infrastructure, db_column="infrastructure", blank=True, null=True
+        Infrastructure, db_column="infrastructure", blank=True, null=True,
+        on_delete=models.DO_NOTHING,
     )
-    cabinetid = models.ForeignKey(Cabinet, db_column="cabinetid", blank=True, null=True)
-    vendorid = models.ForeignKey("Vendor", db_column="vendorid", blank=True, null=True)
+    cabinetid = models.ForeignKey(Cabinet, db_column="cabinetid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
+    vendorid = models.ForeignKey("Vendor", db_column="vendorid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     name = models.CharField(unique=True, max_length=255, blank=True)
     hostname = models.CharField(max_length=255, blank=True)
     ipv4addr = models.CharField(max_length=255, blank=True)
@@ -668,7 +683,8 @@ class Switch(models.Model):
 
 class Switchport(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    switch = models.ForeignKey(Switch, db_column="switchid", blank=True, null=True)
+    switch = models.ForeignKey(Switch, db_column="switchid", blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     type = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True)
     active = models.IntegerField()
@@ -731,7 +747,8 @@ class Switchport(models.Model):
 
 class Traffic95Th(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer, blank=True, null=True)
+    customer = models.ForeignKey(Customer, blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     datetime = models.DateTimeField(blank=True, null=True)
     average = models.BigIntegerField(blank=True, null=True)
     max = models.BigIntegerField(blank=True, null=True)
@@ -743,7 +760,8 @@ class Traffic95Th(models.Model):
 
 class Traffic95ThMonthly(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer, blank=True, null=True)
+    customer = models.ForeignKey(Customer, blank=True, null=True,
+        on_delete=models.DO_NOTHING,)
     month = models.DateField(blank=True, null=True)
     max_95th = models.BigIntegerField(blank=True, null=True)
 
@@ -754,8 +772,10 @@ class Traffic95ThMonthly(models.Model):
 
 class TrafficDaily(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    customer = models.ForeignKey(Customer)
-    ixp = models.ForeignKey(Ixp)
+    customer = models.ForeignKey(Customer,
+        on_delete=models.DO_NOTHING,)
+    ixp = models.ForeignKey(Ixp,
+        on_delete=models.DO_NOTHING,)
     day = models.DateField(blank=True, null=True)
     category = models.CharField(max_length=10, blank=True)
     day_avg_in = models.BigIntegerField(blank=True, null=True)
@@ -790,7 +810,7 @@ class TrafficDaily(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
     ### old
-    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True)
+    customer = models.ForeignKey(Customer, db_column="custid", blank=True, null=True, on_delete=models.DO_NOTHING)
 
     username = models.CharField(
         _("username"),
@@ -1013,6 +1033,7 @@ class VirtualInterface(models.Model):
         db_column="custid",
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING
     )
     name = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=255, blank=True)
@@ -1027,7 +1048,7 @@ class VirtualInterface(models.Model):
 
 class Vlan(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
-    infrastructureid = models.ForeignKey(Infrastructure, db_column="infrastructureid")
+    infrastructureid = models.ForeignKey(Infrastructure, db_column="infrastructureid", on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True)
     number = models.IntegerField(blank=True, null=True)
     rcvrfname = models.CharField(max_length=255, blank=True)
@@ -1050,6 +1071,7 @@ class VlanInterface(models.Model):
         unique=True,
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     ipv6address = models.ForeignKey(
         Ipv6Address,
@@ -1058,6 +1080,7 @@ class VlanInterface(models.Model):
         unique=True,
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     virtual_interface = models.ForeignKey(
         VirtualInterface,
@@ -1065,6 +1088,7 @@ class VlanInterface(models.Model):
         db_column="virtualinterfaceid",
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     vlan = models.ForeignKey(
         Vlan,
@@ -1072,6 +1096,7 @@ class VlanInterface(models.Model):
         db_column="vlanid",
         blank=True,
         null=True,
+        on_delete=models.DO_NOTHING,
     )
     ipv4enabled = models.IntegerField(blank=True, null=True)
     ipv4hostname = models.CharField(max_length=255, blank=True)
