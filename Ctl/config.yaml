@@ -1,0 +1,12 @@
+ctl:
+  plugins:
+
+    - name: venv
+      type: venv
+      config:
+        python_version: "3.6"
+
+
+  permissions:
+    - namespace: ctl
+      permission: crud

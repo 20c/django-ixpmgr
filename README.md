@@ -1,13 +1,12 @@
-
 # django-ixpmgr
-A (very much work in progress) django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager)
+Django overlay for INEX's [IXP-Manager](https://github.com/inex/IXP-Manager).
 
 ### License
 
-Copyright 2015 20C, LLC
+Copyright 2015-2020 20C, LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this softare except in compliance with the License.
+you may not use this software except in compliance with the License.
 You may obtain a copy of the License at
 
    http://www.apache.org/licenses/LICENSE-2.0
@@ -20,8 +19,9 @@ limitations under the License.
 
 ### Configuration
 
-Django settings (defined in config as IXPMGR_<NAME>, included as ixpmgr.settings.<NAME>):
+Django settings (defined in config as `IXPMGR_<NAME>`, included as `ixpmgr.settings.<NAME>`):
 
+```py
 HOME = getattr(settings, 'IXPMGR_HOME', '/usr/local/ixp')
 
 RDNS_DOMAIN= getattr(settings, 'IXPMGR_RDNS_DOMAIN', '')
@@ -31,18 +31,19 @@ RDNS_IPV6_PREFIX_LEN= getattr(settings, 'IXPMGR_RDNS_IPV6_PREFIX_LEN', 64)
 RDNS_KEYRING = getattr(settings, 'IXPMGR_RDNS_KEYRING', {})
 RDNS_SERVER = getattr(settings, 'IXPMGR_RDNS_SERVER', None)
 RDNS_TTL= getattr(settings, 'IXPMGR_RDNS_TTL', 86400)
+```
 
 ### Commands
 
 `upd_rdns`
     updates RDNS based on configured template for ports without RDNS
-    --force to do all of them
+    `--force` to do all of them
 
 `set_l2db` <virtual interface id> <mac address>
     updates mac address for specified virtual port
 
 ### Model
-Model is currently largely just done from a `manage.py inspectdb`, with some
+Model is currently largely just done via `manage.py inspectdb`, with some
 normalization. This is by no means complete, specifically, anything marked with
 '# Field name made lowercase.' should be converted to use underscores.
 
@@ -60,5 +61,3 @@ Must add to application.ini:
 ### Versioning
 First 3 octets of version match the official IXP-Manager release, anything with
 a 4th octect should be considered development.
-
-

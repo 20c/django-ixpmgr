@@ -1,1 +1,14 @@
+*.py[cod]
+*.egg
 *.egg-info
+*.pid
+*.sqlite3
+.cache/
+.coverage*
+.pytest_cache/
+.tox
+coverage.xml
+dist/
+site/
+venv/
+.idea/

@@ -28,7 +28,7 @@ class ApiKeys(models.Model):
     )  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "api_keys"
 
 
@@ -41,7 +41,7 @@ class BgpSessions(models.Model):
     source = models.CharField(max_length=40, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "bgp_sessions"
         unique_together = (("srcipaddressid", "protocol", "dstipaddressid"),)
 
@@ -56,7 +56,7 @@ class Bgpsessiondata(models.Model):
     source = models.CharField(max_length=40, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "bgpsessiondata"
 
 
@@ -72,7 +72,7 @@ class Cabinet(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "cabinet"
 
 
@@ -124,7 +124,7 @@ class CompanyBillingDetail(models.Model):
     )  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "company_billing_detail"
 
 
@@ -146,7 +146,7 @@ class CompanyRegistrationDetail(models.Model):
     country = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "company_registration_detail"
 
 
@@ -163,7 +163,7 @@ class ConsoleServer(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "console_server"
 
 
@@ -185,7 +185,7 @@ class Consoleserverconnection(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "consoleserverconnection"
         unique_together = (("console_server", "port"),)
 
@@ -208,7 +208,7 @@ class Contact(models.Model):
     created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "contact"
 
 
@@ -222,7 +222,7 @@ class ContactGroup(models.Model):
     created = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "contact_group"
 
 
@@ -231,7 +231,7 @@ class ContactToGroup(models.Model):
     contact_group = models.ForeignKey(ContactGroup, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "contact_to_group"
         unique_together = (("contact", "contact_group"),)
 
@@ -249,7 +249,7 @@ class Corebundles(models.Model):
     enabled = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "corebundles"
 
 
@@ -259,13 +259,17 @@ class Coreinterfaces(models.Model):
     )
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "coreinterfaces"
 
 
 class Corelinks(models.Model):
-    core_interface_sidea = models.OneToOneField(Coreinterfaces, models.DO_NOTHING)
-    core_interface_sideb = models.OneToOneField(Coreinterfaces, models.DO_NOTHING)
+    core_interface_sidea = models.OneToOneField(
+        Coreinterfaces, models.DO_NOTHING, related_name="corelinks_sidea"
+    )
+    core_interface_sideb = models.OneToOneField(
+        Coreinterfaces, models.DO_NOTHING, related_name="corelinks_sideb"
+    )
     core_bundle = models.ForeignKey(Corebundles, models.DO_NOTHING)
     bfd = models.IntegerField()
     ipv4_subnet = models.CharField(max_length=18, blank=True, null=True)
@@ -273,7 +277,7 @@ class Corelinks(models.Model):
     enabled = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "corelinks"
 
 
@@ -288,7 +292,12 @@ class Cust(models.Model):
         "Irrdbconfig", models.DO_NOTHING, db_column="irrdb", blank=True, null=True
     )
     reseller = models.ForeignKey(
-        "self", models.DO_NOTHING, db_column="reseller", blank=True, null=True
+        "self",
+        models.DO_NOTHING,
+        db_column="reseller",
+        blank=True,
+        null=True,
+        related_name="reseller_cust",
     )
     name = models.CharField(max_length=255, blank=True, null=True)
     type = models.IntegerField(blank=True, null=True)
@@ -328,7 +337,7 @@ class Cust(models.Model):
     peeringdb_oauth = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "cust"
 
 
@@ -342,7 +351,7 @@ class CustNotes(models.Model):
     updated = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "cust_notes"
 
 
@@ -355,7 +364,7 @@ class CustTag(models.Model):
     updated = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "cust_tag"
 
 
@@ -364,7 +373,7 @@ class CustToCustTag(models.Model):
     customer = models.ForeignKey(Cust, models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "cust_to_cust_tag"
         unique_together = (("customer_tag", "customer"),)
 
@@ -380,7 +389,7 @@ class Custkit(models.Model):
     descr = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "custkit"
 
 
@@ -389,7 +398,7 @@ class CustomerToIxp(models.Model):
     ixp = models.ForeignKey("Ixp", models.DO_NOTHING)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "customer_to_ixp"
         unique_together = (("customer", "ixp"),)
 
@@ -407,7 +416,7 @@ class CustomerToUsers(models.Model):
     created_at = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "customer_to_users"
         unique_together = (("customer", "user"),)
 
@@ -422,7 +431,7 @@ class DocstoreCustomerDirectories(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "docstore_customer_directories"
 
 
@@ -444,7 +453,7 @@ class DocstoreCustomerFiles(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "docstore_customer_files"
 
 
@@ -457,7 +466,7 @@ class DocstoreDirectories(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "docstore_directories"
 
 
@@ -478,7 +487,7 @@ class DocstoreFiles(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "docstore_files"
 
 
@@ -490,7 +499,7 @@ class DocstoreLogs(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "docstore_logs"
 
 
@@ -503,7 +512,7 @@ class FailedJobs(models.Model):
     failed_at = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "failed_jobs"
 
 
@@ -517,7 +526,7 @@ class Infrastructure(models.Model):
     country = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "infrastructure"
         unique_together = (("shortname", "ixp"),)
 
@@ -529,7 +538,7 @@ class Ipv4Address(models.Model):
     address = models.CharField(max_length=16, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "ipv4address"
         unique_together = (("vlanid", "address"),)
 
@@ -541,7 +550,7 @@ class Ipv6Address(models.Model):
     address = models.CharField(max_length=40, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "ipv6address"
         unique_together = (("vlanid", "address"),)
 
@@ -555,7 +564,7 @@ class IrrdbAsn(models.Model):
     last_seen = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "irrdb_asn"
         unique_together = (("asn", "protocol", "customer"),)
 
@@ -569,7 +578,7 @@ class IrrdbPrefix(models.Model):
     last_seen = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "irrdb_prefix"
         unique_together = (("prefix", "protocol", "customer"),)
 
@@ -581,7 +590,7 @@ class Irrdbconfig(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "irrdbconfig"
 
 
@@ -595,7 +604,7 @@ class Ixp(models.Model):
     country = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "ixp"
 
 
@@ -607,7 +616,7 @@ class L2Address(models.Model):
     created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "l2address"
         unique_together = (("mac", "vlan_interface"),)
 
@@ -629,7 +638,7 @@ class Location(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "location"
 
 
@@ -644,7 +653,7 @@ class Logos(models.Model):
     height = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "logos"
 
 
@@ -661,7 +670,7 @@ class Macaddress(models.Model):
     mac = models.CharField(max_length=12, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "macaddress"
 
 
@@ -670,7 +679,7 @@ class Migrations(models.Model):
     batch = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "migrations"
 
 
@@ -682,7 +691,7 @@ class Netinfo(models.Model):
     value = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "netinfo"
 
 
@@ -698,7 +707,7 @@ class Networkinfo(models.Model):
     dnsfile = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "networkinfo"
 
 
@@ -707,7 +716,7 @@ class Oui(models.Model):
     organisation = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "oui"
 
 
@@ -717,7 +726,7 @@ class PasswordResets(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "password_resets"
 
 
@@ -736,7 +745,7 @@ class PatchPanel(models.Model):
     mounted_at = models.SmallIntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "patch_panel"
 
 
@@ -768,7 +777,7 @@ class PatchPanelPort(models.Model):
     loa_code = models.CharField(max_length=25, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "patch_panel_port"
 
 
@@ -785,7 +794,7 @@ class PatchPanelPortFile(models.Model):
     storage_location = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "patch_panel_port_file"
 
 
@@ -814,7 +823,7 @@ class PatchPanelPortHistory(models.Model):
     switchport = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "patch_panel_port_history"
 
 
@@ -831,7 +840,7 @@ class PatchPanelPortHistoryFile(models.Model):
     storage_location = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "patch_panel_port_history_file"
 
 
@@ -840,7 +849,12 @@ class PeeringManager(models.Model):
         Cust, models.DO_NOTHING, db_column="custid", blank=True, null=True
     )
     peerid = models.ForeignKey(
-        Cust, models.DO_NOTHING, db_column="peerid", blank=True, null=True
+        Cust,
+        models.DO_NOTHING,
+        db_column="peerid",
+        blank=True,
+        null=True,
+        related_name="peer",
     )
     email_last_sent = models.DateTimeField(blank=True, null=True)
     emails_sent = models.IntegerField(blank=True, null=True)
@@ -851,16 +865,26 @@ class PeeringManager(models.Model):
     updated = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "peering_manager"
 
 
 class PeeringMatrix(models.Model):
     x_custid = models.ForeignKey(
-        Cust, models.DO_NOTHING, db_column="x_custid", blank=True, null=True
+        Cust,
+        models.DO_NOTHING,
+        db_column="x_custid",
+        blank=True,
+        null=True,
+        related_name="x_customer",
     )
     y_custid = models.ForeignKey(
-        Cust, models.DO_NOTHING, db_column="y_custid", blank=True, null=True
+        Cust,
+        models.DO_NOTHING,
+        db_column="y_custid",
+        blank=True,
+        null=True,
+        related_name="y_customer",
     )
     vlan = models.IntegerField(blank=True, null=True)
     x_as = models.IntegerField(blank=True, null=True)
@@ -869,7 +893,7 @@ class PeeringMatrix(models.Model):
     updated = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "peering_matrix"
 
 
@@ -894,7 +918,7 @@ class Physicalinterface(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "physicalinterface"
 
 
@@ -925,7 +949,7 @@ class Routers(models.Model):
     last_updated = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "routers"
 
 
@@ -940,7 +964,7 @@ class RsPrefixes(models.Model):
     rs_origin = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "rs_prefixes"
 
 
@@ -953,7 +977,7 @@ class Sessions(models.Model):
     last_activity = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "sessions"
 
 
@@ -965,7 +989,7 @@ class SflowReceiver(models.Model):
     dst_port = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "sflow_receiver"
 
 
@@ -1016,7 +1040,7 @@ class Switch(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "switch"
 
 
@@ -1080,7 +1104,7 @@ class Switchport(models.Model):
     )  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "switchport"
 
 
@@ -1095,7 +1119,7 @@ class TelescopeEntries(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "telescope_entries"
 
 
@@ -1106,7 +1130,7 @@ class TelescopeEntriesTags(models.Model):
     tag = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "telescope_entries_tags"
 
 
@@ -1114,7 +1138,7 @@ class TelescopeMonitoring(models.Model):
     tag = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "telescope_monitoring"
 
 
@@ -1126,7 +1150,7 @@ class Traffic95Th(models.Model):
     max = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "traffic_95th"
 
 
@@ -1137,7 +1161,7 @@ class Traffic95ThMonthly(models.Model):
     max_95th = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "traffic_95th_monthly"
 
 
@@ -1173,7 +1197,7 @@ class TrafficDaily(models.Model):
     year_tot_out = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "traffic_daily"
 
 
@@ -1216,7 +1240,7 @@ class TrafficDailyPhysInts(models.Model):
     year_tot_out = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "traffic_daily_phys_ints"
 
 
@@ -1244,7 +1268,7 @@ class User(models.Model):
     created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "user"
 
 
@@ -1256,7 +1280,7 @@ class User2Fa(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "user_2fa"
 
 
@@ -1271,7 +1295,7 @@ class UserLogins(models.Model):
     via = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "user_logins"
 
 
@@ -1284,7 +1308,7 @@ class UserPref(models.Model):
     expire = models.BigIntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "user_pref"
         unique_together = (("user", "attribute", "op", "ix"),)
 
@@ -1300,7 +1324,7 @@ class UserRememberTokens(models.Model):
     is_2fa_complete = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "user_remember_tokens"
         unique_together = (("user", "token"),)
 
@@ -1312,7 +1336,7 @@ class Vendor(models.Model):
     bundle_name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "vendor"
 
 
@@ -1329,7 +1353,7 @@ class Virtualinterface(models.Model):
     fastlacp = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "virtualinterface"
 
 
@@ -1346,7 +1370,7 @@ class Vlan(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "vlan"
         unique_together = (("infrastructureid", "config_name"),)
 
@@ -1389,5 +1413,5 @@ class Vlaninterface(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = "vlaninterface"

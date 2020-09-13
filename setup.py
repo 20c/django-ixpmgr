@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read_file(name):
@@ -8,9 +8,6 @@ def read_file(name):
 
 LONG_DESCRIPTION = read_file("README.md")
 VERSION = read_file("Ctl/VERSION")
-REQUIREMENTS = read_file("Ctl/requirements.txt").split("\n")
-TEST_REQUIREMENTS = read_file("Ctl/requirements-test.txt").split("\n")
-
 
 setup(
     name="django-ixpmgr",
@@ -25,7 +22,6 @@ setup(
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -35,9 +31,8 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
-    install_requires=REQUIREMENTS,
-    test_requires=TEST_REQUIREMENTS,
     url="https://github.com/20c/django-ixpmgr",
     download_url=f"https://github.com/20c/django-ixpmgr/archive/{VERSION}.zip",
+    install_requires=["semver==2.10.2"],
     zip_safe=False,
 )
