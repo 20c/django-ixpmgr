@@ -33,6 +33,6 @@ setup(
     include_package_data=True,
     url="https://github.com/20c/django-ixpmgr",
     download_url=f"https://github.com/20c/django-ixpmgr/archive/{VERSION}.zip",
-    install_requires=["semver==2.10.2"],
+    install_requires=["semver==2.11.0"],
     zip_safe=False,
 )
