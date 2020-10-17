@@ -4,13 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-# pytest-django = "3.9"
 tox = "3.19"
 pytest = "*"
 pytest-cov = "*"
 
 [requires]
-python_version = "3.6"          #todo: loosen ?
+python_version = "3.6"
 
 [packages]
-semver = "==2.10.2"
+semver = "==2.11.0"
